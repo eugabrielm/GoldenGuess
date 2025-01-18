@@ -39,7 +39,7 @@ Na segunda fase, após a divulgação oficial dos indicados pelas organizações
     ```
 3. Instale as dependências:
     ```bash
-    npm install
+    npm install #deve ser feito dentro /backend
     ```
 4. Inicie o servidor:
     ```bash
