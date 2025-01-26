@@ -32,7 +32,7 @@ body {
     text-shadow: 0 0 10px #ffd700, 0 0 20px #ffcc33;
 }
 
-/* Botões Login e Cadastro */
+/* Botões Cadastro */
 .toggle-buttons {
     display: flex;
     justify-content: center;
@@ -57,7 +57,7 @@ body {
     color: #222;
 }
 
-/* Contêiner dos formulários */
+/* Contêiner do formulário */
 .form-content {
     position: relative;
     width: 100%;

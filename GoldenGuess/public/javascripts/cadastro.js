@@ -1,27 +1,5 @@
-// Referências aos botões e formulários
-const loginBtn = document.getElementById('login-btn');
-const registerBtn = document.getElementById('register-btn');
-const loginForm = document.getElementById('login-form');
+// Referências ao formulário de cadastro
 const registerForm = document.getElementById('register-form');
-
-// Função para alternar entre os formulários
-function toggleForms(isLogin) {
-    if (isLogin) {
-        loginBtn.classList.add('active');
-        registerBtn.classList.remove('active');
-        loginForm.classList.add('active');
-        registerForm.classList.remove('active');
-    } else {
-        registerBtn.classList.add('active');
-        loginBtn.classList.remove('active');
-        registerForm.classList.add('active');
-        loginForm.classList.remove('active');
-    }
-}
-
-// Listeners para alternar entre Login e Cadastro
-loginBtn.addEventListener('click', () => toggleForms(true));
-registerBtn.addEventListener('click', () => toggleForms(false));
 
 // Adicionando o listener de submit para o cadastro
 registerForm.addEventListener('submit', async (event) => {
