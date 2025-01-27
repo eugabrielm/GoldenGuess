@@ -54,40 +54,31 @@ exports.registerUser = async (req, res) => {
 exports.loginUser = async (req, res) => {
   const { email, senha } = req.body;
 
-  // Verifica se o e-mail existe no banco de dados
-  const userQuery = `SELECT * FROM usuarios WHERE email = ?`;
-
   try {
+    const query = `SELECT * FROM usuarios WHERE email = ?`;
     const user = await new Promise((resolve, reject) => {
-      db.get(userQuery, [email], (err, row) => {
-        if (err) {
-          reject(err);
-        }
-        resolve(row); // Retorna o objeto do usuário ou null
+      db.get(query, [email], (err, row) => {
+        if (err) reject(err);
+        resolve(row); // Retorna o objeto ou null
       });
     });
 
-    // Se o usuário não existir
     if (!user) {
-      return res.status(400).json({ message: "E-mail ou senha inválidos." });
+      return res.status(400).json({ message: 'Usuário não encontrado.' });
     }
 
-    // Verifica se a senha fornecida corresponde à registrada
-    const match = await bcrypt.compare(senha, user.senha);
-
-    if (!match) {
-      return res.status(400).json({ message: "E-mail ou senha inválidos." });
+    // Verifica se a senha está correta
+    if (user.senha !== senha) {
+      return res.status(400).json({ message: 'Senha incorreta.' });
     }
 
-    // Se a senha estiver correta, verifica o tipo de usuário
-    if (user.tipo_usuario === 'admin') {
-      return res.status(200).json({ message: "Login bem-sucedido!", redirectUrl: "/admin/dashboard" });
-    } else if (user.tipo_usuario === 'padrao') {
-      return res.status(200).json({ message: "Login bem-sucedido!", redirectUrl: "/principal" });
-    }
-
+    // Se tudo estiver correto, retorna o tipo de usuário
+    res.status(200).json({
+      message: 'Login bem-sucedido.',
+      tipo_usuario: user.tipo_usuario, // 'admin' ou 'padrao'
+    });
   } catch (error) {
-    console.error('Erro ao realizar o login:', error);
-    res.status(500).json({ message: "Erro ao realizar o login.", error });
+    console.error('Erro ao fazer login:', error);
+    res.status(500).json({ message: 'Erro ao realizar o login.', error });
   }
 };

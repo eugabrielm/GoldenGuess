@@ -1,0 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  text-decoration: none;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-image: url(../imagens/confete.jpg);
+  background-color: black;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  backdrop-filter: blur(20px);
+}
+
+.container {
+  display: flex;
+}
+
+.main {
+  position: relative;
+  padding: 20px;
+  width: 100%;
+}
+
+.header-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header-wrapper h1 {
+  color: #c9a644;
+  font-size: 25px;
+  font-family: "DM Serif Display", serif;
+  font-weight: 800;
+  font-style: italic;
+}
+
+.header-wrapper i {
+  position: absolute;
+  right: 0;
+  margin: 10px 30px;
+  color: #c9a644;
+  cursor: pointer;
+}
+
+.header-wrapper h3 {
+  margin-top: 50px;
+  color: white;
+  font-size: 50px;
+  font-family: "DM Serif Display", serif;
+  font-weight: 500;
+  font-style: normal;
+  margin-left: 4px;
+}
+
+.main-add-card {
+  display: flex;
+}
+
+.main-add-card .card {
+  width: 400px;
+  height: 130px;
+  margin: 10px;
+  margin-left: 0px;
+  margin-top: 30px;
+  background: #c9a644;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.main-add-card .card h3 {
+  margin: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.main-add-card .button-container {
+  display: flex;
+  gap: 30px;
+}
+
+.main-add-card .card button {
+  background: #f4f4f4;
+  color: #060606;
+  font-weight: 500;
+  padding: 7px 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+}
+
+.main-add-card .card button:hover {
+  background: rgba(235, 231, 223, 0.856);
+}
+
+.menu {
+  display: none;
+  position: absolute;
+  width: 80px;
+  height: 50px;
+  top: 55px;
+  right: 20px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  line-height: 10px;
+}
+
+.menu a {
+  color: #000;
+  font-weight: 500;
+}
+
+.form-container {
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.form-container h3 {
+  margin-bottom: 10px;
+  color: #c9a644;
+  font-size: 20px;
+}
+
+.input-container {
+  margin-bottom: 15px;
+}
+
+.input-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.btn {
+  background: #c9a644;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #d4b05c;
+}
+
+.btn-excluir {
+  background: red;
+  color: white;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-excluir:hover {
+  background: darkred;
+}

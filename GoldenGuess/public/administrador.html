@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GoldenGuess - Administrador</title>
+  <link rel="stylesheet" href="stylesheets/administrador.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+<body>
+  <div class="container">
+    <!-- Menu principal -->
+    <section class="main">
+      <div class="header">
+        <div class="header-wrapper">
+          <h1>GoldenGuess</h1>
+          <i class="fa-solid fa-user" onclick="menu()"></i>
+          <h3>Seja bem-vindo(a), administrador!</h3>
+        </div>
+      </div>
+
+      <!-- Botões para escolher fases -->
+      <div class="main-add-card">
+        <div class="card">
+          <h3>Adicione uma nova premiação</h3>
+          <div class="button-container">
+            <button onclick="mostrarFormularioPrimeiraFase()">Primeira fase</button>
+            <button onclick="mostrarFormularioSegundaFase()">Segunda fase</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contêiner para o formulário de criação de premiação -->
+      <div id="form-container" class="form-container"></div>
+
+      <!-- Menu de logout -->
+      <div id="menu" class="menu">
+        <a href="login.html">Sair</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="javascripts/administrador.js"></script>
+</body>
+</html>

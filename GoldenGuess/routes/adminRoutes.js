@@ -1,10 +1,7 @@
 const express = require('express');
-const { isAdmin, cadastrarPremiacao, editarUsuario, excluirUsuario } = require('../controllers/adminController');
 const router = express.Router();
+const adminController = require('../controllers/adminController');
 
-
-router.post('/premiacao', isAdmin, cadastrarPremiacao);
-router.put('/usuario/:id', isAdmin, editarUsuario);
-router.delete('/usuario/:id', isAdmin, excluirUsuario);
+router.post('/salvar-premiacao', adminController.salvarPremiacao);
 
 module.exports = router;

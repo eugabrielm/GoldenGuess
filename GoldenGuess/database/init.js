@@ -1,9 +1,7 @@
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 
-
 const dbPath = path.resolve(__dirname, 'goldenguess.db');
-
 
 const db = new sqlite3.Database(dbPath, (err) => {
   if (err) {
@@ -50,13 +48,21 @@ const createTables = () => {
       )
     `);
 
-    // Tabela de nomeados
+    // Tabela de nomeados - sem o campo descricao
     db.run(`
       CREATE TABLE IF NOT EXISTS nomeados (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        descricao TEXT,
+        nome TEXT NOT NULL
+      )
+    `);
+
+    // Tabela de relacionamento entre nomeados e premiacoes
+    db.run(`
+      CREATE TABLE IF NOT EXISTS nomeado_premiacao (
+        nomeado_id INTEGER NOT NULL,
         premiacao_id INTEGER NOT NULL,
+        PRIMARY KEY (nomeado_id, premiacao_id),
+        FOREIGN KEY (nomeado_id) REFERENCES nomeados (id) ON DELETE CASCADE,
         FOREIGN KEY (premiacao_id) REFERENCES premiacoes (id) ON DELETE CASCADE
       )
     `);
@@ -108,9 +114,7 @@ const createTables = () => {
   });
 };
 
-
 createTables();
-
 
 db.close((err) => {
   if (err) {

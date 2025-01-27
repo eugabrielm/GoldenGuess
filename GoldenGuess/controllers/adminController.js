@@ -1,64 +1,46 @@
-const db = require('../database/db');
+const db = require('../database/db'); // Supondo que o db.js seja o arquivo de conexão com o banco
 
-// Cadastrar premiações
-const cadastrarPremiacao = (req, res) => {
-    const { nome, descricao, fase = 'palpites' } = req.body;
+// Função para salvar a premiação
+exports.salvarPremiacao = (req, res) => {
+    const { nome, descricao, fase, categorias, nomeados } = req.body;
+    const query = `INSERT INTO premiacoes (nome, descricao, fase) VALUES (?, ?, ?)`;
 
-    const sql = `
-    INSERT INTO premiacoes (nome, descricao, fase) 
-    VALUES (?, ?, ?)
-  `;
-    db.run(sql, [nome, descricao, fase], function (err) {
+    db.run(query, [nome, descricao, fase], function (err) {
         if (err) {
-            return res.status(400).json({ error: 'Erro ao cadastrar premiação.' });
+            return res.status(500).json({ error: err.message });
         }
-        res.status(201).json({ message: 'Premiação cadastrada com sucesso!', id: this.lastID });
+
+        const premiacaoId = this.lastID;
+
+        // Salvar categorias
+        categorias.forEach(categoria => {
+            const categoriaQuery = `INSERT INTO categorias (nome, premiacao_id) VALUES (?, ?)`;
+            db.run(categoriaQuery, [categoria, premiacaoId]);
+        });
+
+        // Se for segunda fase, adicionar nomeados
+        if (fase === 'votacao' && nomeados) {
+            nomeados.forEach(nomeado => {
+                const nomeadoQuery = `INSERT INTO nomeados (nome) VALUES (?)`;
+                db.run(nomeadoQuery, [nomeado], function (err) {
+                    if (err) {
+                        return res.status(500).json({ error: err.message });
+                    }
+                    const nomeadoId = this.lastID;
+                    // Relacionar nomeados com categorias
+                    categorias.forEach(categoria => {
+                        const categoriaQuery = `SELECT id FROM categorias WHERE nome = ? AND premiacao_id = ?`;
+                        db.get(categoriaQuery, [categoria, premiacaoId], (err, row) => {
+                            if (row) {
+                                const categoriaNomeadoQuery = `INSERT INTO categoria_nomeado (categoria_id, nomeado_id) VALUES (?, ?)`;
+                                db.run(categoriaNomeadoQuery, [row.id, nomeadoId]);
+                            }
+                        });
+                    });
+                });
+            });
+        }
+
+        res.status(200).json({ message: 'Premiação salva com sucesso' });
     });
 };
-
-// Editar informações de um usuário
-const editarUsuario = (req, res) => {
-    const { id } = req.params;
-    const { nome, data_nascimento, cpf, email, tipo_usuario } = req.body;
-
-    const sql = `
-    UPDATE usuarios
-    SET nome = ?, data_nascimento = ?, cpf = ?, email = ?, tipo_usuario = ?
-    WHERE id = ?
-  `;
-    db.run(sql, [nome, data_nascimento, cpf, email, tipo_usuario, id], function (err) {
-        if (err) {
-            return res.status(400).json({ error: 'Erro ao atualizar informações do usuário.' });
-        }
-        if (this.changes === 0) {
-            return res.status(404).json({ error: 'Usuário não encontrado.' });
-        }
-        res.status(200).json({ message: 'Usuário atualizado com sucesso.' });
-    });
-};
-
-// Excluir usuário
-const excluirUsuario = (req, res) => {
-    const { id } = req.params;
-
-    const sql = `DELETE FROM usuarios WHERE id = ?`;
-    db.run(sql, [id], function (err) {
-        if (err) {
-            return res.status(400).json({ error: 'Erro ao excluir usuário.' });
-        }
-        if (this.changes === 0) {
-            return res.status(404).json({ error: 'Usuário não encontrado.' });
-        }
-        res.status(200).json({ message: 'Usuário excluído com sucesso.' });
-    });
-};
-// Verifica se o usuário é administrador
-const isAdmin = (req, res, next) => {
-    const { tipo_usuario } = req.body; // Aqui você pode usar um token ou sessão no futuro
-    if (tipo_usuario !== 'admin') {
-        return res.status(403).json({ error: 'Acesso negado. Apenas administradores podem realizar esta ação.' });
-    }
-    next();
-};
-
-module.exports = { isAdmin, cadastrarPremiacao, editarUsuario, excluirUsuario };
