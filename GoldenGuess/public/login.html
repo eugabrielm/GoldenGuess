@@ -1,24 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>GoldenGuess</title> 
     <link rel="stylesheet" href="stylesheets/login.css">
     <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
 </head>
-
 <body>
    <div class="overlay">
         <div class="container">
             <form id="login-form">
                 <h1>GoldenGuess</h1>
                 <div class="input-container">
-                    <input id="login-username" name="email" placeholder="user@email.com" type="email" required>
+                    <label for="register-nome">Usuario</label> 
+                    <input id="login-username" name="email" placeholder="usuario@email.com" type="email" required>
                 </div>
                 <div class="input-container">
-                    <input id="login-password" name="senha" placeholder="********" type="password" required>
+                    <label for="register-nome">Senha</label> 
+                    <input id="login-password" name="senha"placeholder="********" type="password" required>
                     <a href="#">Esqueceu sua senha?</a>
                 </div>
                 <button type="submit" class="btn">Entrar</button>
@@ -29,8 +29,6 @@
             </form>
         </div>
    </div>
-
-    <script src="javascripts/login.js"></script>
+   <script src="javascripts/login.js"></script>
 </body>
-
 </html>

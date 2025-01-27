@@ -1,61 +1,97 @@
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
-
-* {
-  margin: 0;
-  padding: 0;
-  outline: none;
-  border: none;
-  text-decoration: none;
-  box-sizing: border-box;
-  font-family: "Poppins", sans-serif;
-}
-
 body {
-  background-image: url(../imagens/confete.jpg);
-  background-color: black;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  backdrop-filter: blur(20px);
+  background-color: rgb(20, 19, 19);
+  font-family: "Poppins", sans-serif;
+  margin: 0px;
 }
 
 .container {
   display: flex;
 }
 
-.main {
-  position: relative;
-  padding: 20px;
-  width: 100%;
+.sidebar {
+  position: fixed;
+  width: 60px;
+  height: 100vh;
+  background-color: #000000;
+  padding: 15px;
+  z-index: 2;
 }
 
-.header-wrapper {
+.sidebar ul {
+  list-style: none;
+  padding: 60px 20px;
+}
+
+.logo {
+  color: #cba34b;
+  font-family: "DM Serif Display", serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 38px;
+  margin-top: 10px;
+  padding: -12px 10px;
+  text-shadow: 2px 2px 5px rgba(208, 178, 43, 0.7);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.sidebar li {
+  margin: 50px 0;
+  cursor: pointer;
+}
+  
+.sidebar i {
+  position: relative;
+  margin-right: 20px;
+}
+
+.sidebar i::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 10%;
+  left: 150%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 253, 253);
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  border-radius: 5px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.sidebar i:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+.main {
+  padding-left: 110px;
+  width: 85%;
+  position: relative;
+  flex-grow: 1;
+  z-index: 1;
+}
+
+.header {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.header-wrapper h1 {
-  color: #c9a644;
-  font-size: 25px;
-  font-family: "DM Serif Display", serif;
-  font-weight: 800;
-  font-style: italic;
-}
-
-.header-wrapper i {
-  position: absolute;
-  right: 0;
-  margin: 10px 30px;
-  color: #c9a644;
-  cursor: pointer;
-}
-
-.header-wrapper h3 {
+.header h3 {
   margin-top: 50px;
   color: white;
-  font-size: 50px;
+  font-size: 40px;
   font-family: "DM Serif Display", serif;
   font-weight: 500;
   font-style: normal;
@@ -83,6 +119,7 @@ body {
 }
 
 .main-add-card .card h3 {
+  font-weight: 500;
   margin: 10px;
   margin-bottom: 10px;
   text-align: center;
@@ -94,7 +131,9 @@ body {
 }
 
 .main-add-card .card button {
-  background: #f4f4f4;
+  background: #e4e2dc;
+  font-family: "Poppins", sans-serif;
+  border: #ffffff;
   color: #060606;
   font-weight: 500;
   padding: 7px 15px;
@@ -106,7 +145,8 @@ body {
 }
 
 .main-add-card .card button:hover {
-  background: rgba(235, 231, 223, 0.856);
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
 }
 
 .menu {
