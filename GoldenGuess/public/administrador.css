@@ -1,0 +1,225 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+body {
+  background-color: rgb(20, 19, 19);
+  font-family: "Poppins", sans-serif;
+  margin: 0px;
+}
+
+.container {
+  display: flex;
+}
+
+.sidebar {
+  position: fixed;
+  width: 60px;
+  height: 100vh;
+  background-color: #000000;
+  padding: 15px;
+  z-index: 2;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 60px 20px;
+}
+
+.logo {
+  color: #cba34b;
+  font-family: "DM Serif Display", serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 38px;
+  margin-top: 10px;
+  padding: -12px 10px;
+  text-shadow: 2px 2px 5px rgba(208, 178, 43, 0.7);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.sidebar li {
+  margin: 50px 0;
+  cursor: pointer;
+}
+  
+.sidebar i {
+  position: relative;
+  margin-right: 20px;
+}
+
+.sidebar i::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 10%;
+  left: 150%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 253, 253);
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  border-radius: 5px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.sidebar i:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+.main {
+  padding-left: 110px;
+  width: 85%;
+  position: relative;
+  flex-grow: 1;
+  z-index: 1;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.header h3 {
+  margin-top: 50px;
+  color: white;
+  font-size: 40px;
+  font-family: "DM Serif Display", serif;
+  font-weight: 500;
+  font-style: normal;
+  margin-left: 4px;
+}
+
+.main-add-card {
+  display: flex;
+}
+
+.main-add-card .card {
+  width: 400px;
+  height: 130px;
+  margin: 10px;
+  margin-left: 0px;
+  margin-top: 30px;
+  background: #c9a644;
+  backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.main-add-card .card h3 {
+  font-weight: 500;
+  margin: 10px;
+  margin-bottom: 10px;
+  text-align: center;
+}
+
+.main-add-card .button-container {
+  display: flex;
+  gap: 30px;
+}
+
+.main-add-card .card button {
+  background: #e4e2dc;
+  font-family: "Poppins", sans-serif;
+  border: #ffffff;
+  color: #060606;
+  font-weight: 500;
+  padding: 7px 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+  align-items: center;
+  cursor: pointer;
+  display: flex;
+}
+
+.main-add-card .card button:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.menu {
+  display: none;
+  position: absolute;
+  width: 80px;
+  height: 50px;
+  top: 55px;
+  right: 20px;
+  background-color: #f4f4f4;
+  border-radius: 5px;
+  padding: 20px;
+  text-align: center;
+  line-height: 10px;
+}
+
+.menu a {
+  color: #000;
+  font-weight: 500;
+}
+
+.form-container {
+  margin-top: 20px;
+  background: rgba(0, 0, 0, 0.7);
+  padding: 20px;
+  border-radius: 10px;
+  color: #fff;
+}
+
+.form-container h3 {
+  margin-bottom: 10px;
+  color: #c9a644;
+  font-size: 20px;
+}
+
+.input-container {
+  margin-bottom: 15px;
+}
+
+.input-container label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.input-container input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+.btn {
+  background: #c9a644;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background: #d4b05c;
+}
+
+.btn-excluir {
+  background: red;
+  color: white;
+  margin-left: 10px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.btn-excluir:hover {
+  background: darkred;
+}
