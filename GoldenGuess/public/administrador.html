@@ -9,17 +9,20 @@
 </head>
 <body>
   <div class="container">
-    <!-- Menu principal -->
+    <div class="sidebar">
+      <p class="logo">GG</p>
+      <ul>
+        <li><a href="home.html"><i class="fa-solid fa-house" style="color: #ffffff;" data-tooltip="Home"></i></a></li>
+        <li><i class="fa-solid fa-trophy" style="color: #ffffff;" data-tooltip="Premiações"></i></li>
+        <li><a href="login.html"><i class="fa-solid fa-right-from-bracket" style="color: #ffffff;" data-tooltip="Sair"></i></a></li>
+      </ul>
+    </div>
+
     <section class="main">
       <div class="header">
-        <div class="header-wrapper">
-          <h1>GoldenGuess</h1>
-          <i class="fa-solid fa-user" onclick="menu()"></i>
           <h3>Seja bem-vindo(a), administrador!</h3>
-        </div>
       </div>
 
-      <!-- Botões para escolher fases -->
       <div class="main-add-card">
         <div class="card">
           <h3>Adicione uma nova premiação</h3>
@@ -30,17 +33,10 @@
         </div>
       </div>
 
-      <!-- Contêiner para o formulário de criação de premiação -->
       <div id="form-container" class="form-container"></div>
-
-      <!-- Menu de logout -->
-      <div id="menu" class="menu">
-        <a href="login.html">Sair</a>
-      </div>
     </section>
   </div>
 
-  <!-- Scripts -->
   <script src="javascripts/administrador.js"></script>
 </body>
 </html>
