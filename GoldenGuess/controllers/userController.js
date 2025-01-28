@@ -1,6 +1,5 @@
 const db = require('../database/db');
 
-// Listar premiações
 const getPremiacoes = (req, res) => {
   const sql = `SELECT * FROM premiacoes`;
   db.all(sql, [], (err, rows) => {
@@ -11,7 +10,6 @@ const getPremiacoes = (req, res) => {
   });
 };
 
-// Listar categorias de uma premiação
 const getCategorias = (req, res) => {
   const { premiacaoId } = req.params;
   const sql = `SELECT * FROM categorias WHERE premiacao_id = ?`;
@@ -23,7 +21,6 @@ const getCategorias = (req, res) => {
   });
 };
 
-// Registrar palpites
 const enviarPalpite = (req, res) => {
   const { usuario_id, nomeado_id, categoria_id, premiacao_id } = req.body;
 
@@ -45,10 +42,9 @@ const listarUsuarios = (req, res) => {
     if (err) {
       return res.status(500).json({ error: 'Erro ao buscar usuários.' });
     }
-    res.status(200).json(rows);  // Retorna a lista de usuários
+    res.status(200).json(rows); 
   });
 };
 
 module.exports = { getPremiacoes, getCategorias, enviarPalpite, listarUsuarios };
-
 

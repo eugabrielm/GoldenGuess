@@ -15,7 +15,7 @@ const criarUsuarioAdmin = () => {
   const data_nascimento = "1980-01-01";
   const cpf = "00000000000";
   const email = "admin@goldenguess.com";
-  const senha = "admin123"; // Aqui pode ser um hash gerado com bcrypt
+  const senha = "admin123"; 
   const tipo_usuario = "admin";
 
   db.run(
