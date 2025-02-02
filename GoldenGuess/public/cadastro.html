@@ -11,41 +11,54 @@
 
 <body>
     <div class="overlay">
+        <div id="popup-overlay" class="popup-overlay"></div>
         <div class="container">
-            <form id="register-form">
+            <form id="register-form" novalidate>
                 <h1>GoldenGuess</h1>
                 <div class="input-container">
-                    <label for="register-nome">Nome</label>
+                    <label for="register-nome">Nome *</label>
                     <input type="text" id="register-nome"
                     name="nome" placeholder="Usuario" required>
                 </div>
                 <div class="input-container">
-                    <label for="register-cpf">CPF</label>
-                    <input type="text" id="register-cpf" name="cpf" placeholder="___.___.___-__" required>
+                    <label for="register-cpf">CPF *</label>
+                    <input type="text" id="register-cpf" maxlength="14" name="cpf" placeholder="___.___.___-__" required>
                 </div>
                 <div class="input-container">
-                    <label for="register-email">Email</label>
+                    <label for="register-email">Email *</label>
                     <input type="email" 
                     id="register-email"
                     name="email" placeholder="usuario@email.com" required>
                 </div>
                 <div class="input-container">
-                    <label for="register-data-nascimento">Data de Nascimento</label>
-                    <input id="register-data-nascimento" name="data_nascimento" type="text" placeholder="__/__/____" required>
+                    <label for="register-data-nascimento">Data de Nascimento *</label>
+                    <input id="register-data-nascimento" class="data" maxlength="10" name="data_nascimento" type="date" placeholder="__/__/____" required>
                 </div>
                 <div class="input-container">
-                    <label for="register-password">Senha</label>
+                    <label for="register-password">Senha *</label>
                     <input type="password" id="register-password"
-                    name="senha"
+                    name="senha" maxlength="8"
                     placeholder="********" required>
-                </div>
+                    <span class="tooltip">A senha deve conter pelo menos: <br>
+                        - Uma letra maiúscula<br>
+                        - Uma letra minúscula<br>
+                        - Um número<br>
+                        - Um caractere especial (@, #, $, etc.)
+                    </span>
+                </div>            
                 <div class="input-container">
-                    <label for="confirm-password">Confirmar Senha</label>
+                    <label for="confirm-password">Confirmar Senha *</label>
                     <input type="password" id="confirm-password"
-                    nome="confirmPassword" placeholder="********" required>
+                    name="confirmPassword" maxlength="8" placeholder="********" required>
                 </div>
                 <button type="submit" class="btn">Cadastrar</button>
             </form>
+        </div>
+        <div id="popup-mensagem" class="popup">
+            <div class="popup-content">
+                <p id="popup-texto"></p>
+                <button class="popup-close" onclick="fecharPopup()">Fechar</button>
+            </div>
         </div>
     </div>
     <script src="javascripts/cadastro.js"></script>

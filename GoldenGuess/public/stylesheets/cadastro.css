@@ -49,6 +49,7 @@ h1 {
     font-size: 60px;
     text-align: center;
     color: #c9a644;
+    text-shadow: 2px 2px 5px rgba(200, 153, 34, 0.9);
     font-family: "DM Serif Display", serif;
     font-weight: 800;
     font-style: italic;
@@ -72,12 +73,40 @@ h1 {
     outline: none;
 }
 
+.input-container input:hover{
+    background-color: #dfdbdb;
+    color: #282525;
+}
+
 label {
     font-size: 0.7rem;
     color: #dfdbdb;
     display: inline-block;
     margin-bottom: 5px;
     
+}
+
+.tooltip {
+    display: none;
+    position: absolute;
+    top: 70px; 
+    left: 5px;
+    width: 250px;
+    background: rgb(249, 245, 245);
+    color: #000000;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 12px;
+    text-align: left;
+    line-height: 1.4;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.input-container:hover .tooltip {
+    display: block;
+    opacity: 1;
 }
 
 .btn {
@@ -90,4 +119,64 @@ label {
     align-items: center;
     justify-content: center;
     margin-top: 16px;
+    font-family: "Poppins", sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    border-color: #c9a644;
+}
+
+.btn:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s ease;
+}
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999; 
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 11%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(247, 247, 247);
+    color: rgb(15, 15, 15);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 1000;
+    width: 300px;
+    height: 130px;
+  }
+
+.popup p{
+    position: relative;
+    top: 16px;  
+}
+
+.popup-close {
+    position: absolute;
+    bottom: 10px;  
+    left: 50%;  
+    transform: translateX(80%);
+    padding: 7px 15px;
+    background-color: #c9a644;
+    color: rgb(0, 0, 0);
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-close:hover {
+    background-color: #8d6f1d;
 }

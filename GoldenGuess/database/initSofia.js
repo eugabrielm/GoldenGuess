@@ -41,7 +41,11 @@ const createTables = () => {
         tipo_usuario TEXT CHECK(tipo_usuario IN ('admin', 'padrao')) DEFAULT 'padrao',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela usuarios:', err.message);
+      }
+    });
 
     // Tabela de premiações
     db.run(`
@@ -49,10 +53,14 @@ const createTables = () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         descricao TEXT,
-        fase TEXT CHECK(fase IN ('palpites', 'votacao')) DEFAULT 'palpites',
+        fase TEXT CHECK(fase IN ('palpites', 'votacao', 'concluido')) DEFAULT 'palpites',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela premiacoes:', err.message);
+      }
+    });
 
     // Tabela de categorias
     db.run(`
@@ -60,9 +68,14 @@ const createTables = () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL,
         premiacao_id INTEGER NOT NULL,
+        max_nomeados INTEGER NOT NULL CHECK(max_nomeados > 0),
         FOREIGN KEY (premiacao_id) REFERENCES premiacoes (id) ON DELETE CASCADE
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela categorias:', err.message);
+      }
+    });
 
     // Tabela de nomeados - sem o campo descricao
     db.run(`
@@ -70,7 +83,11 @@ const createTables = () => {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela nomeados:', err.message);
+      }
+    });
 
     // Tabela de relacionamento entre nomeados e premiacoes
     db.run(`
@@ -81,34 +98,47 @@ const createTables = () => {
         FOREIGN KEY (nomeado_id) REFERENCES nomeados (id) ON DELETE CASCADE,
         FOREIGN KEY (premiacao_id) REFERENCES premiacoes (id) ON DELETE CASCADE
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela nomeado_premiacao:', err.message);
+      }
+    });
 
     // Tabela para relacionar categorias com nomeados
     db.run(`
       CREATE TABLE IF NOT EXISTS categoria_nomeado (
         categoria_id INTEGER NOT NULL,
         nomeado_id INTEGER NOT NULL,
+        ganhador INTEGER DEFAULT 0,
         PRIMARY KEY (categoria_id, nomeado_id),
         FOREIGN KEY (categoria_id) REFERENCES categorias (id) ON DELETE CASCADE,
-        FOREIGN KEY (nomeado_id) REFERENCES nomeados (id) ON DELETE CASCADE
+        FOREIGN KEY (nomeado_id) REFERENCES nomeados (id) ON DELETE CASCADE 
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela categoria_nomeado:', err.message);
+      }
+    });
 
     // Tabela de palpites
     db.run(`
       CREATE TABLE IF NOT EXISTS palpites (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         usuario_id INTEGER NOT NULL,
-        nomeado_id INTEGER NOT NULL,
+        nome TEXT NOT NULL,
+        nome_formatado TEXT NOT NULL,
         categoria_id INTEGER NOT NULL,
         premiacao_id INTEGER NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (usuario_id) REFERENCES usuarios (id) ON DELETE CASCADE,
-        FOREIGN KEY (nomeado_id) REFERENCES nomeados (id) ON DELETE CASCADE,
         FOREIGN KEY (categoria_id) REFERENCES categorias (id) ON DELETE CASCADE,
         FOREIGN KEY (premiacao_id) REFERENCES premiacoes (id) ON DELETE CASCADE
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela palpites:', err.message);
+      }
+    });
 
     // Tabela de votos
     db.run(`
@@ -124,65 +154,19 @@ const createTables = () => {
         FOREIGN KEY (categoria_id) REFERENCES categorias (id) ON DELETE CASCADE,
         FOREIGN KEY (premiacao_id) REFERENCES premiacoes (id) ON DELETE CASCADE
       )
-    `);
+    `, (err) => {
+      if (err) {
+        console.error('Erro ao criar tabela votos:', err.message);
+      }
+    });
 
     console.log('Tabelas criadas com sucesso.');
   });
 };
 
-//dropTables();
-//createTables();
-
-const verificarEmail = (email, callback) => {
-  db.get(`SELECT email FROM usuarios WHERE email = ?`, [email], (err, row) => {
-    if (err) {
-      console.error('Erro ao verificar o e-mail:', err.message);
-    } else {
-      callback(row !== undefined); // true se o e-mail existir, false caso contrário
-    }
-  });
-};
-
-// Função para cadastrar usuários
-const cadastrarUsuario = (nome, email) => {
-  verificarEmail(email, (existe) => {
-    if (existe) {
-      console.log(`O e-mail ${email} já está cadastrado.`);
-    } else {
-      db.run(
-        `INSERT INTO usuarios (nome, email) VALUES (?, ?)`,
-        [nome, email],
-        (err) => {
-          if (err) {
-            console.error('Erro ao cadastrar usuário:', err.message);
-          } else {
-            console.log(`Usuário "${nome}" cadastrado com sucesso!`);
-          }
-        }
-      );
-    }
-  });
-};
-
-// Função para cadastrar premiações
-const cadastrarPremiacao = (nome, descricao, fase) => {
-  db.run(
-    `INSERT INTO premiacoes (nome, descricao, fase) VALUES (?, ?, ?)`,
-    [nome, descricao, fase],
-    (err) => {
-      if (err) {
-        console.error('Erro ao cadastrar premiação:', err.message);
-      } else {
-        console.log(`Premiação "${nome}" cadastrada com sucesso!`);
-      }
-    }
-  );
-};
-
-/*cadastrarPremiacao('Oscar 2025', 'Filme', 'palpites');
-cadastrarPremiacao('Grammy 2025', 'Música', 'palpites');
-cadastrarPremiacao('Oscar 2024', 'Filme', 'palpites');*/
-
+// Descomente as funções de acordo com a necessidade
+dropTables();
+createTables();
 
 const listarPremiacoes = () => {
   db.all(`SELECT nome, descricao, fase FROM premiacoes`, [], (err, rows) => {
@@ -197,54 +181,49 @@ const listarPremiacoes = () => {
   });
 };
 
-const cadastrarCategoriasParaPremiacao = (premiacaoId, categorias) => {
-  // Verifica se o ID da premiação existe
-  db.get(`SELECT id FROM premiacoes WHERE id = ?`, [premiacaoId], (err, row) => {
+//listarPremiacoes();
+
+const verPalpitesNoConsole = () => {
+  const sql = 'SELECT * FROM palpites';  // Consulta para ver todos os palpites
+
+  db.all(sql, [], (err, rows) => {
     if (err) {
-      console.error('Erro ao buscar premiação:', err.message);
+      console.error('Erro ao buscar palpites:', err.message);
       return;
     }
 
-    if (!row) {
-      console.log(`Nenhuma premiação encontrada com o ID ${premiacaoId}.`);
-      return;
+    if (rows.length === 0) {
+      console.log('Nenhum palpite encontrado.');
+    } else {
+      console.log('Palpites encontrados:');
+      console.table(rows);  // Isso vai mostrar os resultados no formato de tabela no console
     }
-
-    // Cadastra cada categoria no ID da premiação especificado
-    categorias.forEach((categoria) => {
-      db.run(
-        `INSERT INTO categorias (nome, premiacao_id) VALUES (?, ?)`,
-        [categoria, premiacaoId],
-        (err) => {
-          if (err) {
-            console.error(
-              `Erro ao cadastrar categoria "${categoria}" para a premiação ID ${premiacaoId}:`,
-              err.message
-            );
-          } else {
-            console.log(
-              `Categoria "${categoria}" cadastrada para a premiação ID ${premiacaoId}.`
-            );
-          }
-        }
-      );
-    });
   });
 };
 
-// Exemplo de uso para cadastrar categorias
-const categoriasParaPremiacao3 = ['Melhor som', 'Melhor figurino', 'Melhor música'];
-const categoriasParaPremiacao2 = ['Melhor filme', 'Melhor atriz', 'Melhor ator'];
-const categoriasParaPremiacao1 = ['Melhor edição', 'Melhor diretor', 'Melhor ator'];
+const verVotosNoConsole = () => {
+  const sql = 'SELECT * FROM votos';  // Consulta para ver todos os palpites
 
-// Cadastra as categorias no ID específico de premiação
-/*cadastrarCategoriasParaPremiacao(3, categoriasParaPremiacao2);
-cadastrarCategoriasParaPremiacao(2, categoriasParaPremiacao3);
-cadastrarCategoriasParaPremiacao(1, categoriasParaPremiacao1);*/
+  db.all(sql, [], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar palpites:', err.message);
+      return;
+    }
 
-//listarPremiacoes();
+    if (rows.length === 0) {
+      console.log('Nenhum palpite encontrado.');
+    } else {
+      console.log('Palpites encontrados:');
+      console.table(rows);  // Isso vai mostrar os resultados no formato de tabela no console
+    }
+  });
+};
 
-// Fechar conexão com o banco após listar tudo
+verPalpitesNoConsole();
+verVotosNoConsole();
+
+
+// Fechar a conexão ao banco de dados após as operações
 db.close((err) => {
   if (err) {
     console.error('Erro ao fechar o banco de dados:', err.message);
@@ -252,24 +231,3 @@ db.close((err) => {
     console.log('Conexão com o banco de dados encerrada.');
   }
 });
-
-// Listar usuários cadastrados
-/*db.all(`SELECT nome FROM usuarios`, [], (err, rows) => {
-  if (err) {
-    console.error('Erro ao listar usuários:', err.message);
-  } else {
-    console.log('Lista de usuários cadastrados:');
-    rows.forEach((row) => {
-      console.log(row.nome);
-    });
-  }
-
-  // Fechar conexão com o banco
-  db.close((err) => {
-    if (err) {
-      console.error('Erro ao fechar o banco de dados:', err.message);
-    } else {
-      console.log('Conexão com o banco de dados encerrada.');
-    }
-  });
-});*/

@@ -1,0 +1,333 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
+
+/* Estilos Gerais (mesmos do arquivo principal) */
+body {
+  margin: 0;
+  font-family: "Poppins", sans-serif;
+  color: white;
+}
+
+.container-content {
+  display: flex;
+  background-color: rgb(20, 19, 19);
+}
+
+.sidebar {
+  position: fixed;
+  width: 60px;
+  height: 100vh;
+  background-color: rgb(5, 5, 5);
+  padding: 15px;
+  z-index: 2;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 60px 20px;
+}
+
+.logo {
+  color: #cba34b;
+  font-family: "DM Serif Display", serif;
+  font-weight: 800;
+  font-style: italic;
+  font-size: 38px;
+  margin-top: 10px;
+  padding: -12px 10px;
+  text-shadow: 2px 2px 5px rgba(208, 178, 43, 0.7);
+}
+
+.logo:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+.sidebar li {
+  margin: 50px 0;
+  cursor: pointer;
+}
+
+.sidebar i {
+  position: relative;
+  margin-right: 20px;
+}
+
+.sidebar i::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: 10%;
+  left: 150%;
+  transform: translateY(-50%);
+  background-color: rgba(255, 253, 253);
+  color: rgb(0, 0, 0);
+  padding: 10px 20px;
+  border-radius: 5px;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  white-space: nowrap;
+  z-index: 10;
+}
+
+.sidebar i:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+.main-content {
+  padding-left: 90px;
+  width: 85%;
+  position: relative;
+  flex-grow: 1;
+  z-index: 1;
+}
+
+/* ============================ */
+/* Estilos Específicos para a Tela de Listagem de Premiações */
+/* ============================ */
+
+/* Container da página de listagem */
+.list-container {
+  padding: 20px;
+  margin-left: 90px; /* Compensa a sidebar */
+}
+
+/* Barra de Filtros (busca, fase e ordenação) */
+.filter-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.filter-bar input.search-input,
+.filter-bar select.filter-select {
+  padding: 8px 15px;
+  border: 2px solid rgba(114, 113, 109, 0.2);
+  border-radius: 10px;
+  background: transparent;
+  color: rgb(159, 156, 156);
+  font-size: 14px;
+}
+
+.filter-bar input.search-input {
+  flex-grow: 1;
+  min-width: 250px;
+}
+
+/* Lista de Premiações */
+.premiacoes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.premiacao-item {
+  background-color: #2a2a2a;
+  padding: 15px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease;
+  cursor: pointer;
+}
+
+.premiacao-item:hover {
+  transform: translateY(-3px);
+}
+
+.premiacao-item img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 5px;
+}
+
+.premiacao-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.premiacao-info h4 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #eae8e5;
+}
+
+.premiacao-info p {
+  margin: 5px 0 0 0;
+  font-size: 0.9rem;
+  color: #dfdbdb;
+}
+
+/* Pop-up para exibição dos detalhes da premiação */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-overlay.active {
+  visibility: visible;
+  opacity: 1;
+}
+
+.popup-content {
+  background: #1f1f1f;
+  padding: 25px;
+  border-radius: 10px;
+  width: 450px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.popup-content h2 {
+  text-align: center;
+  margin-bottom: 15px;
+  color: #eae8e5;
+}
+
+.popup-content p {
+  color: #dfdbdb;
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 10px;
+}
+
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #c9a644;
+  color: #fff;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.popup-close:hover {
+  background: #d4b05c;
+}
+
+/* ============================ */
+/* Outras classes (botões, cards, etc.) – Copiadas do CSS principal */
+/* ============================ */
+
+.btn-salvar {
+  width: 44%;
+  height: 100%;
+  color: black;
+  border: #c9a644;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.7rem;
+  font-weight: 500;
+  display: block;
+  margin: 0 auto;
+  justify-content: center;
+}
+
+.btn {
+  width: 13%;
+  height: 100%;
+  color: black;
+  background-color: #c9a644;
+  border: #c9a644;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-family: "Poppins", sans-serif;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.btn:hover {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Container para os cards (caso sejam utilizados) */
+.cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-top: 15px;
+  justify-content: center;
+}
+
+/* Estilo para cada card de nomeado */
+.nomeado-card {
+  position: relative;
+  background-color: #2a2a2a;
+  padding: 15px 20px;
+  border-radius: 8px;
+  min-width: 150px;
+  text-align: center;
+  font-size: 1rem;
+  color: #f1f1f1;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.nomeado-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+/* Estilo para o nomeado vencedor */
+.nomeado-card.winner {
+  background-color: #c9a644 !important;
+  font-weight: bold;
+  border: 2px solid #fff;
+}
+
+/* Selo indicando vencedor */
+.winner-badge {
+  position: absolute;
+  top: -10px;
+  right: -10px;
+  background-color: #fff;
+  color: #c9a644;
+  font-size: 0.75rem;
+  padding: 3px 6px;
+  border-radius: 50%;
+  font-weight: bold;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.order-button {
+  background: #2a2a2a;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 5px;
+  margin-left: 10px;
+  font-size: 16px;
+}
+
+.order-button:hover {
+  background: #2a2a2a;
+}

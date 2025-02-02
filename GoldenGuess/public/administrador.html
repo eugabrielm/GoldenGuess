@@ -9,11 +9,11 @@
 </head>
 <body>
   <div class="container">
+    <div id="popup-overlay-erro" class="popup-overlay"></div>
     <div class="sidebar">
       <p class="logo">GG</p>
       <ul>
-        <li><a href="home.html"><i class="fa-solid fa-house" style="color: #ffffff;" data-tooltip="Home"></i></a></li>
-        <li><i class="fa-solid fa-trophy" style="color: #ffffff;" data-tooltip="Premiações"></i></li>
+        <li><a href="principal.html"><i class="fa-solid fa-house" style="color: #ffffff;" data-tooltip="Home"></i></a></li>
         <li><a href="login.html"><i class="fa-solid fa-right-from-bracket" style="color: #ffffff;" data-tooltip="Sair"></i></a></li>
       </ul>
     </div>
@@ -25,13 +25,19 @@
 
       <div class="main-add-card">
         <div class="card">
-          <h3>Adicione uma nova premiação</h3>
+          <h3>Nova premiação</h3>
           <div class="button-container">
             <button onclick="mostrarFormularioPrimeiraFase()">Primeira fase</button>
             <button onclick="mostrarFormularioSegundaFase()">Segunda fase</button>
+            <button onclick="mostrarFormularioTerceiraFase()">Terceira fase</button>
           </div>
         </div>
       </div>
+      <div id="popup-mensagem-erro" class="popup-erro">
+        <div class="popup-content-erro">
+            <p id="popup-texto-erro"></p>
+            <button class="popup-close-erro" onclick="fecharPopupErro()">Fechar</button>
+        </div>
     </section>
   </div>
 

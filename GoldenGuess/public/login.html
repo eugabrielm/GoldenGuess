@@ -9,15 +9,16 @@
 </head>
 <body>
    <div class="overlay">
+    <div id="popup-overlay" class="popup-overlay"></div>
         <div class="container">
             <form id="login-form">
                 <h1>GoldenGuess</h1>
                 <div class="input-container">
-                    <label for="register-nome">Usuario</label> 
+                    <label for="register-nome">Usuario *</label> 
                     <input id="login-username" name="email" placeholder="usuario@email.com" type="email" required>
                 </div>
                 <div class="input-container">
-                    <label for="register-nome">Senha</label> 
+                    <label for="register-nome">Senha *</label> 
                     <input id="login-password" name="senha"placeholder="********" type="password" required>
                     <a href="#">Esqueceu sua senha?</a>
                 </div>
@@ -27,6 +28,12 @@
                     <p>Ainda não tem uma conta? <a href="cadastro.html">Cadastre-se</a></p>
                 </div>
             </form>
+        </div>
+        <div id="popup-mensagem" class="popup">
+            <div class="popup-content">
+                <p id="popup-texto"></p>
+                <button class="popup-close" onclick="fecharPopup()">Fechar</button>
+            </div>
         </div>
    </div>
    <script src="javascripts/login.js"></script>

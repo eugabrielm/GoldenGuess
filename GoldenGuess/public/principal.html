@@ -14,9 +14,9 @@
       <p class="logo">GG</p>
       <ul>
         <li><a href="principal.html"><i class="fa-solid fa-house" style="color: #ffffff;" data-tooltip="Home"></i></a></li>
-        <li><i class="fa-solid fa-trophy" style="color: #ffffff;" data-tooltip="Premiações"></i></li>
+        <li><a href = premiacoes-list.html><i class="fa-solid fa-trophy" style="color: #ffffff;" data-tooltip="Premiações"></i></a></li>
         <li><i class="fa-solid fa-comments" style="color: #ffffff;" data-tooltip="Seus palpites"></i></li>
-        <li><a href="login.html"><i class="fa-solid fa-right-from-bracket" style="color: #ffffff;" data-tooltip="Sair"></i></a></li>
+        <li><a href="login.html" id="logout-link"><i class="fa-solid fa-right-from-bracket" style="color: #ffffff;" data-tooltip="Sair"></i></a></li>
       </ul>
     </div>
 
@@ -34,15 +34,16 @@
       </div>
 
       <div class="awards">
-          <h3>Quem serão os indicados?</h2>
-          <div class="awards-list"></div>
+        <h3>Quem serão os indicados?</h3>
+        <div class="awards-list" id="fase-palpite"></div>
       </div>
       <div class="awards">
         <h3>Quem serão os vencedores?</h3>
-        <div class="awards-list">
-          <img src="imagens/confete.jpg" class="popup-trigger">
-          <img src="imagens/Fernanda.jpg" class="popup-trigger">
-        </div>
+        <div class="awards-list" id="fase-votacao"></div>
+      </div>
+      <div class="awards">
+        <h3>E os vencedores são...</h3> 
+        <div class="awards-list" id="fase-concluido"></div>
       </div>
     </div>
   </div>

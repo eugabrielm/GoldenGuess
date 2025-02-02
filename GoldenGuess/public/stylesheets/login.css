@@ -74,6 +74,11 @@ h1 {
     outline: none;
 }
 
+.input-container input:hover{
+    background-color: #dfdbdb;
+    color: #282525;
+}
+
 .input-container a {
     text-decoration: none;
     font-size: 0.7rem;
@@ -94,6 +99,7 @@ label {
     width: 100%;
     height: 34px;
     background-color: #c9a644;
+    border-color: #c9a644;
     outline: none;
     border-radius: 5px;
     display: flex;
@@ -101,6 +107,7 @@ label {
     justify-content: center;
     margin-top: 20px;
     cursor: pointer;
+    font-family: "Poppins", sans-serif;
     font-weight: 600;
 }
 
@@ -124,3 +131,120 @@ label {
 .register a {
     color: white;
 }
+
+.popup-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 999; 
+}
+
+.popup {
+    display: none;
+    position: fixed;
+    top: 11%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(247, 247, 247);
+    color: rgb(15, 15, 15);
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    line-height: 1.2;
+    z-index: 1000;
+    width: 300px;
+    height: 130px;
+  }
+
+.popup p{
+    position: relative;
+    top: 16px;  
+}
+
+.popup-close {
+    position: absolute;
+    bottom: 10px;  
+    left: 50%;  
+    transform: translateX(80%);
+    padding: 7px 15px;
+    background-color: #c9a644;
+    color: rgb(0, 0, 0);
+    font-weight: 500;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.popup-close:hover {
+    background-color: #8d6f1d;
+}
+
+/* Estilização para o container de busca */
+.search-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  
+  #search-input {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid rgba(114, 113, 109, 0.2);
+    border-radius: 10px 0 0 10px;
+    font-size: 14px;
+    color: #9f9c9c;
+    background: transparent;
+  }
+  
+  #search-btn {
+    padding: 10px;
+    border: 2px solid rgba(114, 113, 109, 0.2);
+    border-left: none;
+    background-color: #c9a644;
+    color: black;
+    border-radius: 0 10px 10px 0;
+    cursor: pointer;
+  }
+  
+  /* Container para os cards de premiações */
+  .cards-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 15px;
+    justify-content: center;
+  }
+  
+  /* Estilização para cada card de premiação */
+  .award-card {
+    background-color: #2a2a2a;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 300px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    transition: transform 0.2s ease;
+  }
+  
+  .award-card:hover {
+    transform: scale(1.02);
+  }
+  
+  .award-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+  }
+  
+  .award-info {
+    padding: 10px;
+    color: #f1f1f1;
+  }
+  
+  .filters {
+    margin-bottom: 15px;
+  }
+  

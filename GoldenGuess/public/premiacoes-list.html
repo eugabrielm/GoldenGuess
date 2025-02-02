@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Lista de Premiações</title>
+  <!-- CSS específico para esta tela -->
+  <link rel="stylesheet" href="stylesheets/premiacoes-list.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <!-- Sidebar (copie o código que já utiliza na sua aplicação) -->
+  <div class="sidebar">
+    <p class="logo">GG</p>
+    <ul>
+      <li><a href="principal.html"><i class="fa-solid fa-house" style="color: #ffffff;" data-tooltip="Home"></i></a></li>
+      <li><a href="premiacoes-list.html"><i class="fa-solid fa-trophy" style="color: #ffffff;" data-tooltip="Premiações"></i></a></li>
+      <li><i class="fa-solid fa-comments" style="color: #ffffff;" data-tooltip="Seus palpites"></i></li>
+      <li><a href="login.html" id="logout-link"><i class="fa-solid fa-right-from-bracket" style="color: #ffffff;" data-tooltip="Sair"></i></a></li>
+    </ul>
+  </div>
+
+  <div class="list-container">
+    <div class="filter-bar">
+      <!-- Barra de busca -->
+      <input type="text" id="search-input" class="search-input" placeholder="Buscar premiação...">
+      <!-- Filtro por fase -->
+      <select id="phase-filter" class="filter-select">
+        <option value="all">Todas as fases</option>
+        <option value="palpites">Palpites</option>
+        <option value="votacao">Votação</option>
+        <option value="concluido">Concluído</option>
+      </select>
+      <!-- Ordenação -->
+      <select id="sort-filter" class="filter-select">
+        <option value="created_at">Data de Criação</option>
+        <option value="nome">Ordem Alfabética</option>
+      </select>
+
+      <button id="order-button" class="order-button">
+        <i class="fa-solid fa-sort"></i>
+      
+    </div>
+    <!-- Lista de premiações -->
+    <div class="premiacoes-list" id="premiacoes-list">
+      <!-- Os itens serão inseridos via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Pop-up para exibir detalhes da premiação -->
+  <div id="popup-overlay" class="popup-overlay">
+    <div class="popup-content" id="popup-content">
+      <button class="popup-close" onclick="fecharPopup()">X</button>
+      <!-- Os detalhes serão carregados aqui -->
+    </div>
+  </div>
+
+  <!-- Script específico para esta tela -->
+  <script src="javascripts/premiacoes-list.js"></script>
+</body>
+</html>
