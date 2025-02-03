@@ -77,18 +77,19 @@ const createTables = () => {
       }
     });
 
-    // Tabela de nomeados - sem o campo descricao
+
+    // Tabela de nomeados - com nome e nome_formatado
     db.run(`
-      CREATE TABLE IF NOT EXISTS nomeados (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL
-      )
-    `, (err) => {
+  CREATE TABLE IF NOT EXISTS nomeados (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nome TEXT NOT NULL,
+    nome_formatado TEXT NOT NULL UNIQUE
+  )
+`, (err) => {
       if (err) {
         console.error('Erro ao criar tabela nomeados:', err.message);
       }
     });
-
     // Tabela de relacionamento entre nomeados e premiacoes
     db.run(`
       CREATE TABLE IF NOT EXISTS nomeado_premiacao (

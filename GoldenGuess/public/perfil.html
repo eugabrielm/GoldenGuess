@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GoldenGuess - Perfil</title>
+  <link rel="stylesheet" href="stylesheets/perfil.css">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div class="sidebar">
+        <p class="logo">GG</p>
+        <ul>
+          <li><a href="principal.html"><i class="fa-solid fa-house" style="color: #ffffff;" data-tooltip="Home"></i></a></li>
+          <li><a href = premiacoes-list.html><i class="fa-solid fa-trophy" style="color: #ffffff;" data-tooltip="Premiações"></i></a></li>
+          <li><a href="perfil.html" id="perfil-link"><i class="fa-solid fa-comments" style="color: #ffffff;" data-tooltip="Seus palpites"></i></a></li>
+          <li><a href="login.html" id="logout-link"><i class="fa-solid fa-right-from-bracket" style="color: #ffffff;" data-tooltip="Sair"></i></a></li>
+        </ul>
+    </div>
+    <header>
+      <div class="profile-header">
+        <div class="avatar"></div>
+        <div class="user-info">
+          <h1>Meu Perfil</h1>
+          <button class="edit-profile">Editar Perfil</button>
+        </div>
+      </div>
+    </header>
+
+    <nav>
+      <ul>
+        <li class="active">Meu perfil</li>
+        <li>Minha atividade</li>
+        <li>Meus resultados</li>
+      </ul>
+    </nav>
+
+    <!-- Seções de Conteúdo -->
+    <section id="meu-perfil" class="active"></section>
+    <section id="minha-atividade"></section>
+    <section id="meus-resultados"></section>
+  </div>
+
+  <script src="javascripts/perfil.js"></script>
+</body>
+</html>

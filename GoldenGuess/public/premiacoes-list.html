@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Lista de Premiações</title>
-  <!-- CSS específico para esta tela -->
+  <!-- CSS específico para essa tela -->
   <link rel="stylesheet" href="stylesheets/premiacoes-list.css">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
 </head>
 <body>
-  <!-- Sidebar (copie o código que já utiliza na sua aplicação) -->
+  <!-- Sidebar (mantenha o código da sua aplicação) -->
   <div class="sidebar">
     <p class="logo">GG</p>
     <ul>
@@ -20,9 +20,11 @@
     </ul>
   </div>
 
+  <!-- Container principal para a lista de premiações -->
   <div class="list-container">
+    <!-- Barra de filtros -->
     <div class="filter-bar">
-      <!-- Barra de busca -->
+      <!-- Campo de busca -->
       <input type="text" id="search-input" class="search-input" placeholder="Buscar premiação...">
       <!-- Filtro por fase -->
       <select id="phase-filter" class="filter-select">
@@ -31,31 +33,26 @@
         <option value="votacao">Votação</option>
         <option value="concluido">Concluído</option>
       </select>
-      <!-- Ordenação -->
+      <!-- Filtro de ordenação -->
       <select id="sort-filter" class="filter-select">
         <option value="created_at">Data de Criação</option>
         <option value="nome">Ordem Alfabética</option>
       </select>
+      <!-- Botão para alternar entre crescente e decrescente -->
+      <button id="toggle-order" class="order-button">⬆ Crescente</button>
+    </div>
 
-      <button id="order-button" class="order-button">
-        <i class="fa-solid fa-sort"></i>
-      
-    </div>
-    <!-- Lista de premiações -->
-    <div class="premiacoes-list" id="premiacoes-list">
-      <!-- Os itens serão inseridos via JavaScript -->
-    </div>
+    <!-- Container onde serão renderizadas as premiações -->
+    <div id="premiacoes-list" class="premiacoes-list"></div>
+
+    <!-- Container para os controles de paginação -->
+    <div id="pagination-controls"></div>
   </div>
 
   <!-- Pop-up para exibir detalhes da premiação -->
-  <div id="popup-overlay" class="popup-overlay">
-    <div class="popup-content" id="popup-content">
-      <button class="popup-close" onclick="fecharPopup()">X</button>
-      <!-- Os detalhes serão carregados aqui -->
-    </div>
-  </div>
+  <div id="popup-overlay" class="popup-overlay"></div>
 
-  <!-- Script específico para esta tela -->
+  <!-- Inclusão do script com a lógica (filtragem, paginação e formulários) -->
   <script src="javascripts/premiacoes-list.js"></script>
 </body>
 </html>

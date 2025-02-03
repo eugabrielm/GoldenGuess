@@ -318,8 +318,8 @@ body {
 }
 
 .order-button {
-  background: #2a2a2a;
-  color: white;
+  background: #007BFF;
+  color: #c9a644;
   border: none;
   padding: 8px 12px;
   cursor: pointer;
@@ -329,5 +329,164 @@ body {
 }
 
 .order-button:hover {
-  background: #2a2a2a;
+  background: #0056b3;
+}
+
+
+/* Estilização geral do pop-up */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.popup-overlay.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.popup-content {
+  background: #1f1f1f;
+  padding: 30px;
+  border-radius: 10px;
+  width: 450px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+/* Botão de fechar */
+.popup-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: #c9a644;
+  border: none;
+  color: #c9a644;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.popup-close:hover {
+  background: #d4b05c;
+}
+
+/* Títulos do pop-up */
+.popup-content h2,
+.popup-content h3,
+.popup-title {
+  margin-bottom: 20px;
+  text-align: center;
+  color: #c9a644;
+  font-family: 'DM Serif Display', serif;
+}
+
+/* Labels e inputs dos formulários */
+.popup-content label {
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+  display: block;
+  color: #c9a644;
+  font-weight: 500;
+}
+
+.popup-content .form-select,
+.popup-content input[type="text"],
+.popup-content input[type="number"] {
+  width: 100%;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  border: 2px solid rgba(114, 113, 109, 0.2);
+  border-radius: 10px;
+  background: transparent;
+  color: #c9a644;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.popup-content .form-select:focus,
+.popup-content input[type="text"]:focus,
+.popup-content input[type="number"]:focus {
+  border-color: #c9a644;
+}
+
+/* Botão de salvar */
+.popup-content button.btn-salvar {
+  width: 100%;
+  padding: 10px;
+  background: #c9a644;
+  border: none;
+  color: #1f1f1f;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.popup-content button.btn-salvar:hover {
+  background: #d4b05c;
+}
+
+/* Container para inputs (ex: palpites) */
+.input-container {
+  margin-bottom: 15px;
+}
+
+.input-container label {
+  font-size: 0.85rem;
+  margin-bottom: 5px;
+  color: #c9a644;
+}
+
+.popup-content .form-select {
+  background: #1f1f1f; /* Fundo escuro para compatibilizar com o pop-up */
+  color: #c9a644;       /* Fonte clara */
+  border: 2px solid rgba(114, 113, 109, 0.2);
+  border-radius: 10px;
+  padding: 10px 15px;
+  margin-bottom: 15px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.3s ease;
+}
+
+.popup-content .form-select option {
+  background: #1f1f1f;
+  color: #c9a644;
+}
+
+
+#pagination-controls button {
+  background: #1f1f1f;
+  color: #c9a644;
+  border: none;
+  padding: 8px 12px;
+  margin: 0 5px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+#pagination-controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+#pagination-controls span {
+  font-size: 1rem;
+  color: #c9a644;
 }

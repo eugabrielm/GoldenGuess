@@ -1,5 +1,7 @@
 const db = require('../database/db');
-
+const formatarNome = (nome) => {
+  return nome.toLowerCase().replace(/\s+/g, ''); // Converte para minúsculas e remove espaços
+};
 const salvarPremiacaoPrimeiraFase = (req, res) => {
     const { nome, descricao, categorias } = req.body;
 
@@ -54,8 +56,8 @@ const salvarPremiacaoSegundaFase = (req, res) => {
       const insertPromises = indicadosPorCategoria.flatMap(({ categoriaId, indicados }) => {
         return indicados.map(nomeado => {
           return new Promise((resolve, reject) => {
-            const queryNomeado = `INSERT INTO nomeados (nome) VALUES (?)`;
-            db.run(queryNomeado, [nomeado], function (err) {
+            const queryNomeado = `INSERT INTO nomeados (nome, nome_formatado) VALUES (?, ?)`;
+            db.run(queryNomeado, [nomeado, formatarNome(nomeado)], function (err)  {
               if (err) return reject(err);
   
               const nomeadoId = this.lastID;
