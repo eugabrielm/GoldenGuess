@@ -10,7 +10,7 @@ const adminRoutes = require('./routes/adminRoutes');
 
 // Inicialização do app
 const app = express();
-const PORT = 3000;
+const PORT = 3001;
 
 // Middlewares
 app.use(cors());
@@ -33,3 +33,4 @@ app.use('/admin', adminRoutes);  // Rotas de administração
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+

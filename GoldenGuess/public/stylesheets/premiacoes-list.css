@@ -1,23 +1,36 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap');
 @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700");
 
-/* Estilos Gerais (mesmos do arquivo principal) */
+/* Variáveis para a paleta preto e dourado */
+:root {
+  --bg-dark: #111111;       /* Fundo geral */
+  --black: #000000;         /* Preto absoluto */
+  --gray-dark: #2a2a2a;      /* Tons escuros para cards e itens */
+  --gold: #c9a644;          /* Dourado principal */
+  --gold-hover: #d4b05c;     /* Dourado para hover */
+  --text-light: #f1f1f1;     /* Texto claro */
+}
+
+/* Estilos Gerais */
 body {
   margin: 0;
   font-family: "Poppins", sans-serif;
-  color: white;
+  background-color: var(--bg-dark);
+  color: var(--text-light);
 }
 
+/* Container principal do conteúdo */
 .container-content {
   display: flex;
-  background-color: rgb(20, 19, 19);
+  background-color: var(--bg-dark);
 }
 
+/* Sidebar fixa */
 .sidebar {
   position: fixed;
   width: 60px;
   height: 100vh;
-  background-color: rgb(5, 5, 5);
+  background-color: var(--black);
   padding: 15px;
   z-index: 2;
 }
@@ -27,15 +40,16 @@ body {
   padding: 60px 20px;
 }
 
+/* Logo com fonte estilizada e efeito de sombra dourada */
 .logo {
-  color: #cba34b;
+  color: var(--gold);
   font-family: "DM Serif Display", serif;
   font-weight: 800;
   font-style: italic;
   font-size: 38px;
   margin-top: 10px;
-  padding: -12px 10px;
-  text-shadow: 2px 2px 5px rgba(208, 178, 43, 0.7);
+  padding: 5px 10px;
+  text-shadow: 2px 2px 5px rgba(201, 166, 68, 0.7);
 }
 
 .logo:hover {
@@ -53,14 +67,15 @@ body {
   margin-right: 20px;
 }
 
+/* Tooltip para os ícones da sidebar */
 .sidebar i::after {
   content: attr(data-tooltip);
   position: absolute;
   top: 10%;
   left: 150%;
   transform: translateY(-50%);
-  background-color: rgba(255, 253, 253);
-  color: rgb(0, 0, 0);
+  background-color: var(--black);
+  color: var(--gold);
   padding: 10px 20px;
   border-radius: 5px;
   visibility: hidden;
@@ -77,6 +92,7 @@ body {
   opacity: 1;
 }
 
+/* Área principal de conteúdo (compensa a sidebar) */
 .main-content {
   padding-left: 90px;
   width: 85%;
@@ -86,7 +102,7 @@ body {
 }
 
 /* ============================ */
-/* Estilos Específicos para a Tela de Listagem de Premiações */
+/* Estilos para a Tela de Listagem de Premiações */
 /* ============================ */
 
 /* Container da página de listagem */
@@ -107,10 +123,10 @@ body {
 .filter-bar input.search-input,
 .filter-bar select.filter-select {
   padding: 8px 15px;
-  border: 2px solid rgba(114, 113, 109, 0.2);
+  border: 2px solid rgba(201, 166, 68, 0.5);
   border-radius: 10px;
   background: transparent;
-  color: rgb(159, 156, 156);
+  color: var(--text-light);
   font-size: 14px;
 }
 
@@ -127,7 +143,7 @@ body {
 }
 
 .premiacao-item {
-  background-color: #2a2a2a;
+  background-color: var(--gray-dark);
   padding: 15px;
   border-radius: 8px;
   display: flex;
@@ -157,13 +173,13 @@ body {
 .premiacao-info h4 {
   margin: 0;
   font-size: 1.2rem;
-  color: #eae8e5;
+  color: var(--gold);
 }
 
 .premiacao-info p {
   margin: 5px 0 0 0;
   font-size: 0.9rem;
-  color: #dfdbdb;
+  color: var(--text-light);
 }
 
 /* Pop-up para exibição dos detalhes da premiação */
@@ -173,7 +189,7 @@ body {
   left: 0;
   width: 100vw;
   height: 100vh;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -189,7 +205,7 @@ body {
 }
 
 .popup-content {
-  background: #1f1f1f;
+  background: var(--bg-dark);
   padding: 25px;
   border-radius: 10px;
   width: 450px;
@@ -202,22 +218,23 @@ body {
 .popup-content h2 {
   text-align: center;
   margin-bottom: 15px;
-  color: #eae8e5;
+  color: var(--gold);
 }
 
 .popup-content p {
-  color: #dfdbdb;
+  color: var(--text-light);
   font-size: 0.95rem;
   line-height: 1.5;
   margin-bottom: 10px;
 }
 
+/* Botão para fechar o pop-up */
 .popup-close {
   position: absolute;
   top: 10px;
   right: 10px;
-  background: #c9a644;
-  color: #fff;
+  background: var(--gold);
+  color: var(--black);
   border: none;
   padding: 5px 10px;
   border-radius: 5px;
@@ -226,7 +243,7 @@ body {
 }
 
 .popup-close:hover {
-  background: #d4b05c;
+  background: var(--gold-hover);
 }
 
 /* ============================ */
@@ -236,8 +253,8 @@ body {
 .btn-salvar {
   width: 44%;
   height: 100%;
-  color: black;
-  border: #c9a644;
+  color: var(--black);
+  border: 2px solid var(--gold);
   padding: 8px 15px;
   border-radius: 5px;
   cursor: pointer;
@@ -246,15 +263,15 @@ body {
   font-weight: 500;
   display: block;
   margin: 0 auto;
-  justify-content: center;
+  text-align: center;
 }
 
 .btn {
   width: 13%;
   height: 100%;
-  color: black;
-  background-color: #c9a644;
-  border: #c9a644;
+  color: var(--black);
+  background-color: var(--gold);
+  border: 2px solid var(--gold);
   padding: 8px 15px;
   border-radius: 5px;
   cursor: pointer;
@@ -277,16 +294,16 @@ body {
   justify-content: center;
 }
 
-/* Estilo para cada card de nomeado */
+/* Card para nomeados */
 .nomeado-card {
   position: relative;
-  background-color: #2a2a2a;
+  background-color: var(--gray-dark);
   padding: 15px 20px;
   border-radius: 8px;
   min-width: 150px;
   text-align: center;
   font-size: 1rem;
-  color: #f1f1f1;
+  color: var(--text-light);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -298,9 +315,9 @@ body {
 
 /* Estilo para o nomeado vencedor */
 .nomeado-card.winner {
-  background-color: #c9a644 !important;
+  background-color: var(--gold) !important;
   font-weight: bold;
-  border: 2px solid #fff;
+  border: 2px solid var(--text-light);
 }
 
 /* Selo indicando vencedor */
@@ -308,8 +325,8 @@ body {
   position: absolute;
   top: -10px;
   right: -10px;
-  background-color: #fff;
-  color: #c9a644;
+  background-color: var(--gray-dark);
+  color: var(--gold);
   font-size: 0.75rem;
   padding: 3px 6px;
   border-radius: 50%;
@@ -317,9 +334,10 @@ body {
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
+/* Botão de ordenação */
 .order-button {
-  background: #007BFF;
-  color: #c9a644;
+  background: var(--bg-dark);
+  color: var(--gold);
   border: none;
   padding: 8px 12px;
   cursor: pointer;
@@ -329,77 +347,18 @@ body {
 }
 
 .order-button:hover {
-  background: #0056b3;
+  background: var(--bg-dark);
 }
 
+/* ============================ */
+/* Estilização dos inputs e selects nos pop-ups */
+/* ============================ */
 
-/* Estilização geral do pop-up */
-.popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.popup-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-.popup-content {
-  background: #1f1f1f;
-  padding: 30px;
-  border-radius: 10px;
-  width: 450px;
-  max-height: 90vh;
-  overflow-y: auto;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
-  position: relative;
-}
-
-/* Botão de fechar */
-.popup-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  background: #c9a644;
-  border: none;
-  color: #c9a644;
-  padding: 5px 10px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-}
-
-.popup-close:hover {
-  background: #d4b05c;
-}
-
-/* Títulos do pop-up */
-.popup-content h2,
-.popup-content h3,
-.popup-title {
-  margin-bottom: 20px;
-  text-align: center;
-  color: #c9a644;
-  font-family: 'DM Serif Display', serif;
-}
-
-/* Labels e inputs dos formulários */
 .popup-content label {
   font-size: 0.9rem;
   margin-bottom: 5px;
   display: block;
-  color: #c9a644;
+  color: var(--gold);
   font-weight: 500;
 }
 
@@ -409,10 +368,10 @@ body {
   width: 100%;
   padding: 10px 15px;
   margin-bottom: 15px;
-  border: 2px solid rgba(114, 113, 109, 0.2);
+  border: 2px solid rgba(201, 166, 68, 0.5);
   border-radius: 10px;
   background: transparent;
-  color: #c9a644;
+  color: var(--gold);
   font-size: 14px;
   outline: none;
   transition: border-color 0.3s ease;
@@ -421,16 +380,25 @@ body {
 .popup-content .form-select:focus,
 .popup-content input[type="text"]:focus,
 .popup-content input[type="number"]:focus {
-  border-color: #c9a644;
+  border-color: var(--gold);
 }
 
-/* Botão de salvar */
+.popup-content .form-select {
+  background: var(--bg-dark);
+}
+
+.popup-content .form-select option {
+  background: var(--bg-dark);
+  color: var(--gold);
+}
+
+/* Botão de salvar dentro do pop-up */
 .popup-content button.btn-salvar {
   width: 100%;
   padding: 10px;
-  background: #c9a644;
+  background: var(--gold);
   border: none;
-  color: #1f1f1f;
+  color: var(--black);
   font-size: 1rem;
   font-weight: 600;
   border-radius: 10px;
@@ -439,7 +407,7 @@ body {
 }
 
 .popup-content button.btn-salvar:hover {
-  background: #d4b05c;
+  background: var(--gold-hover);
 }
 
 /* Container para inputs (ex: palpites) */
@@ -450,30 +418,16 @@ body {
 .input-container label {
   font-size: 0.85rem;
   margin-bottom: 5px;
-  color: #c9a644;
+  color: var(--gold);
 }
 
-.popup-content .form-select {
-  background: #1f1f1f; /* Fundo escuro para compatibilizar com o pop-up */
-  color: #c9a644;       /* Fonte clara */
-  border: 2px solid rgba(114, 113, 109, 0.2);
-  border-radius: 10px;
-  padding: 10px 15px;
-  margin-bottom: 15px;
-  font-size: 14px;
-  outline: none;
-  transition: border-color 0.3s ease;
-}
-
-.popup-content .form-select option {
-  background: #1f1f1f;
-  color: #c9a644;
-}
-
+/* ============================ */
+/* Paginação */
+/* ============================ */
 
 #pagination-controls button {
-  background: #1f1f1f;
-  color: #c9a644;
+  background: var(--bg-dark);
+  color: var(--gold);
   border: none;
   padding: 8px 12px;
   margin: 0 5px;
@@ -488,5 +442,5 @@ body {
 
 #pagination-controls span {
   font-size: 1rem;
-  color: #c9a644;
+  color: var(--gold);
 }

@@ -229,7 +229,7 @@ header nav {
   }
   
   .resultado-card {
-    background-color: #ecf0f1;
+    background-color: #1f1f1f;
     border-radius: 8px;
     padding: 15px;
     margin-bottom: 15px;
@@ -242,7 +242,7 @@ header nav {
   }
   
   .resultado-card h3 {
-    color: #3498db;
+    color: #c9a644;
     margin-bottom: 10px;
   }
   
