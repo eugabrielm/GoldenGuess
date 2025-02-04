@@ -1,10 +1,12 @@
-// Variáveis globais para paginação
+// premiacoes-list.js
+
+// Variáveis globais para paginação e atividade do usuário
 let todasPremiacoes = [];
 let ordemCrescente = true;
 let currentPage = 1;
 const itemsPerPage = 5;
+let usuarioAtividade = { palpites: [], votos: [] }; // armazenará a atividade do usuário
 
-// Verifica se o usuário está logado
 document.addEventListener('DOMContentLoaded', () => {
   const usuarioId = localStorage.getItem('usuario_id');
   if (!usuarioId) {
@@ -30,12 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
   carregarPremiacoes();
 });
 
-// FUNÇÕES DE FILTRAGEM, ORDENAÇÃO E RENDERIZAÇÃO
-
+// --- Carrega atividade do usuário e as premiações ---
 function carregarPremiacoes() {
-  fetch('http://localhost:3000/user/premiacoes')
-    .then(response => response.json())
-    .then(premiacoes => {
+  const usuarioId = localStorage.getItem('usuario_id');
+
+  Promise.all([
+    fetch(`http://localhost:3000/user/atividade/${usuarioId}`)
+      .then(res => res.json())
+      .catch(() => ({ palpites: [], votos: [] })),
+    fetch('http://localhost:3000/user/premiacoes')
+      .then(response => response.json())
+  ])
+    .then(([atividade, premiacoes]) => {
+      usuarioAtividade = atividade; // armazena a atividade para uso na renderização
       todasPremiacoes = premiacoes;
       currentPage = 1; // Sempre inicia na primeira página ao carregar novos dados
       aplicarFiltros();
@@ -43,6 +52,7 @@ function carregarPremiacoes() {
     .catch(error => console.error('Erro ao carregar premiações:', error));
 }
 
+// --- Filtragem, ordenação e renderização ---
 function aplicarFiltros() {
   const searchTerm = document.getElementById('search-input').value.toLowerCase();
   const phaseValue = document.getElementById('phase-filter').value;
@@ -50,15 +60,15 @@ function aplicarFiltros() {
 
   let filtrados = [...todasPremiacoes];
 
-  // Filtro por fase
+  // Filtra por fase
   if (phaseValue !== 'all') {
     filtrados = filtrados.filter(p => p.fase === phaseValue);
   }
-  // Filtro por busca
+  // Filtra pela busca
   if (searchTerm.trim() !== '') {
     filtrados = filtrados.filter(p => p.nome.toLowerCase().includes(searchTerm));
   }
-  // Ordenação
+  // Ordena conforme o critério selecionado
   filtrados.sort((a, b) => {
     let resultado;
     if (sortValue === 'created_at') {
@@ -79,8 +89,6 @@ function alternarOrdem() {
   aplicarFiltros();
 }
 
-
-
 function renderPremiacoes(premiacoes) {
   const container = document.getElementById('premiacoes-list');
   container.innerHTML = '';
@@ -90,7 +98,7 @@ function renderPremiacoes(premiacoes) {
     renderPaginationControls(0);
     return;
   }
- 
+
   // Paginação: calcula total de páginas e o slice para a página atual
   const totalPages = Math.ceil(premiacoes.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
@@ -119,11 +127,23 @@ function renderPremiacoes(premiacoes) {
       </div>
     `;
 
-    // Atribui a ação de clique conforme a fase da premiação
+    // Associa o clique de acordo com a fase e verifica se a ação já foi realizada
     if (premiacao.fase === 'palpites') {
-      item.addEventListener('click', () => mostrarFormularioPrimeiraFase(premiacao));
+      const jaPalpitou = usuarioAtividade.palpites.some(p => Number(p.id) === premiacao.id);
+      if (jaPalpitou) {
+        item.classList.add('disabled');
+        item.title = "Você já enviou seus palpites para esta premiação.";
+      } else {
+        item.addEventListener('click', () => mostrarFormularioPrimeiraFase(premiacao));
+      }
     } else if (premiacao.fase === 'votacao') {
-      item.addEventListener('click', () => mostrarFormularioSegundaFase(premiacao));
+      const jaVotou = usuarioAtividade.votos.some(v => Number(v.id) === premiacao.id);
+      if (jaVotou) {
+        item.classList.add('disabled');
+        item.title = "Você já votou nesta premiação.";
+      } else {
+        item.addEventListener('click', () => mostrarFormularioSegundaFase(premiacao));
+      }
     } else if (premiacao.fase === 'concluido') {
       item.addEventListener('click', () => mostrarFormularioTerceiraFase(premiacao));
     }
@@ -137,7 +157,7 @@ function renderPremiacoes(premiacoes) {
 function renderPaginationControls(totalPages) {
   let paginationContainer = document.getElementById('pagination-controls');
 
-  // Se não existir o container de paginação, crie e insira após a lista
+  // Se não existir o container de paginação, crie-o e insira após a lista
   if (!paginationContainer) {
     paginationContainer = document.createElement('div');
     paginationContainer.id = 'pagination-controls';
@@ -148,7 +168,7 @@ function renderPaginationControls(totalPages) {
 
   paginationContainer.innerHTML = '';
 
-  if (totalPages <= 1) return; // Não exibe controles se só houver uma página
+  if (totalPages <= 1) return; // Não exibe controles se houver somente uma página
 
   // Botão "Anterior"
   const prevBtn = document.createElement('button');
@@ -181,7 +201,12 @@ function renderPaginationControls(totalPages) {
   paginationContainer.appendChild(nextBtn);
 }
 
-// FUNÇÕES DE POP-UP (FORMULÁRIOS) – MESMA LÓGICA DA TELA PRINCIPAL
+// Inicia o carregamento das premiações ao carregar a página
+window.onload = carregarPremiacoes;
+
+/* ============================================================= */
+/*            FUNÇÕES DOS POP-UPS (FORMULÁRIOS)                */
+/* ============================================================= */
 
 function mostrarFormularioPrimeiraFase(premiacao) {
   let popupOverlay = document.getElementById('popup-overlay');
@@ -197,20 +222,23 @@ function mostrarFormularioPrimeiraFase(premiacao) {
       <button class="popup-close" onclick="fecharPopup()">X</button>
       <form id="primeira-fase-form">
         <h3 class="h3-form" data-premiacao-id="${premiacao.id}">${premiacao.nome}</h3>
-        <div class="categorias-container">
-          <label for="premiacao-descricao">Escolha a categoria:</label>
-          <select class="form-select" aria-label="Default select example">
-            <option selected>Escolha a categoria</option>
-          </select>
-          <div id="palpites-container"></div>
-        </div>
+        <div id="categorias-container" class="hidden"></div>
         <button type="submit" class="btn-salvar">Salvar Premiação</button>
       </form>
     </div>
   `;
 
   popupOverlay.classList.add('active');
-  carregarCategorias(premiacao.id);
+
+  // Exibe as categorias e indicados (caso haja endpoint implementado)
+  const categoriasContainer = document.getElementById('categorias-container');
+  if (premiacao.id) {
+    categoriasContainer.classList.remove('hidden');
+    carregarCategoriasEIndicados(premiacao.id);
+  } else {
+    categoriasContainer.classList.add('hidden');
+    categoriasContainer.innerHTML = '';
+  }
 
   const form = document.getElementById('primeira-fase-form');
   form.addEventListener('submit', salvarPalpites);
@@ -230,28 +258,22 @@ function mostrarFormularioSegundaFase(premiacao) {
       <button class="popup-close" onclick="fecharPopup()">X</button>
       <form id="segunda-fase-form">
         <h3 class="h3-form" data-premiacao-id="${premiacao.id}">${premiacao.nome}</h3>
-        <div class="categorias-container">
-          <label for="categoria-select">Categorias:</label>
-          <select class="form-select" aria-label="Categoria" id="categoria-select">
-            <option selected>Escolha a categoria</option>
-          </select>
-        </div>
-        <div class="nomeados-container" id="nomeados-container"></div>
+        <div id="categorias-vencedores-container" class="hidden"></div>
         <button type="submit" class="btn-salvar">Salvar Premiação</button>
       </form>
     </div>
   `;
 
   popupOverlay.classList.add('active');
-  carregarCategoriasVotacao(premiacao.id);
 
-  const categoriaSelect = document.getElementById('categoria-select');
-  categoriaSelect.addEventListener('change', function() {
-    const categoriaId = categoriaSelect.value;
-    if (categoriaId) {
-      carregarNomeados(categoriaId, premiacao.id);
-    }
-  });
+  const categoriasContainer = document.getElementById('categorias-vencedores-container');
+  if (premiacao.id) {
+    categoriasContainer.classList.remove('hidden');
+    carregarCategoriasEVencedores(premiacao.id);
+  } else {
+    categoriasContainer.classList.add('hidden');
+    categoriasContainer.innerHTML = '';
+  }
 
   const form = document.getElementById('segunda-fase-form');
   form.addEventListener('submit', salvarVoto);
@@ -302,52 +324,91 @@ function fecharPopup() {
   }
 }
 
-// FUNÇÕES AUXILIARES PARA CARREGAR DADOS
+/* ============================================================= */
+/*                FUNÇÕES AUXILIARES (Ex.: chamadas de API)     */
+/* ============================================================= */
 
-function carregarCategorias(premiacaoId) {
-  const selectElement = document.querySelector('.form-select');
-  selectElement.innerHTML = '<option selected>Escolha a categoria</option>';
+async function carregarCategoriasEIndicados(premiacaoId) {
+  const categoriasContainer = document.getElementById('categorias-container');
+  categoriasContainer.innerHTML = 'Carregando categorias...';
 
-  fetch(`http://localhost:3000/user/categorias/${premiacaoId}`)
-    .then(response => response.json())
-    .then(categorias => {
-      categorias.forEach(categoria => {
-        const option = document.createElement('option');
-        option.value = categoria.id;
-        option.textContent = categoria.nome;
-        option.dataset.maxNomeados = categoria.max_nomeados;
-        selectElement.appendChild(option);
-      });
+  try {
+    const responseCategorias = await fetch(`http://localhost:3000/user/categorias/${premiacaoId}`);
+    if (!responseCategorias.ok) {
+      throw new Error('Erro ao buscar categorias');
+    }
+    const categorias = await responseCategorias.json();
 
-      selectElement.addEventListener('change', (event) => {
-        const selectedOption = event.target.selectedOptions[0];
-        const maxNomeados = selectedOption.dataset.maxNomeados;
-        carregarInputsPalpites(maxNomeados);
-      });
-    })
-    .catch(error => console.error('Erro ao carregar categorias:', error));
+    let categoriasHTML = '';
+    categorias.forEach(categoria => {
+      categoriasHTML += `
+        <div class="categoria-container">
+          <h4>${categoria.nome}</h4>
+          <div class="indicados-container">
+            ${Array.from({ length: categoria.max_nomeados }, (_, i) => `
+              <div class="input-container">
+                <label>Indicado ${i + 1}:</label>
+                <input type="text" class="indicado-input" data-categoria-id="${categoria.id}" placeholder="Digite o nome do indicado ${i + 1}" required>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    });
+
+    categoriasContainer.innerHTML = categoriasHTML;
+    restaurarEstadoInputs();
+  } catch (error) {
+    console.error('Erro ao carregar categorias:', error);
+    categoriasContainer.innerHTML = 'Erro ao carregar categorias.';
+  }
 }
 
-function carregarCategoriasVotacao(premiacaoId) {
-  const categoriaSelect = document.getElementById('categoria-select');
+async function carregarCategoriasEVencedores(premiacaoId) {
+  const categoriasContainer = document.getElementById('categorias-vencedores-container');
+  categoriasContainer.innerHTML = 'Carregando categorias e indicados...';
 
-  fetch(`http://localhost:3000/user/categorias/${premiacaoId}`)
-    .then(response => response.json())
-    .then(categorias => {
-      categorias.forEach(categoria => {
-        const option = document.createElement('option');
-        option.value = categoria.id;
-        option.textContent = categoria.nome;
-        categoriaSelect.appendChild(option);
-      });
-    })
-    .catch(err => console.error('Erro ao carregar categorias:', err));
+  try {
+    const responseCategorias = await fetch(`http://localhost:3000/admin/buscar-categorias?premiacaoId=${premiacaoId}`);
+    if (!responseCategorias.ok) {
+      throw new Error('Erro ao buscar categorias');
+    }
+    const categorias = await responseCategorias.json();
+
+    let categoriasHTML = '';
+    for (const categoria of categorias) {
+      const responseIndicados = await fetch(`http://localhost:3000/admin/buscar-indicados?categoriaId=${categoria.id}`);
+      if (!responseIndicados.ok) {
+        throw new Error('Erro ao buscar indicados');
+      }
+      const indicados = await responseIndicados.json();
+
+      categoriasHTML += `
+        <div class="categoria-vencedores">
+          <h4 data-categoria-id="${categoria.id}">${categoria.nome}</h4>
+          <div class="indicados-container">
+            ${indicados.map(indicado => `
+              <label class="indicado-item">
+                <input type="radio" name="vencedor-${categoria.id}" value="${indicado.id}">
+                <span>${indicado.nome}</span>
+              </label>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    categoriasContainer.innerHTML = categoriasHTML;
+  } catch (error) {
+    console.error('Erro ao carregar categorias e indicados:', error);
+    categoriasContainer.innerHTML = 'Erro ao carregar categorias e indicados.';
+  }
 }
 
 function carregarCategoriasConcluido(premiacaoId) {
   const categoriaSelect = document.getElementById('categoria-select');
   categoriaSelect.innerHTML = '<option selected>Escolha a categoria</option>';
-  
+
   fetch(`http://localhost:3000/user/categorias/${premiacaoId}`)
     .then(response => response.json())
     .then(categorias => {
@@ -361,58 +422,9 @@ function carregarCategoriasConcluido(premiacaoId) {
     .catch(err => console.error('Erro ao carregar categorias:', err));
 }
 
-function carregarInputsPalpites(maxNomeados) {
-  const palpitesContainer = document.getElementById('palpites-container');
-  palpitesContainer.innerHTML = '';
-
-  for (let i = 1; i <= maxNomeados; i++) {
-    const inputContainer = document.createElement('div');
-    inputContainer.classList.add('input-container', 'categoria');
-
-    const label = document.createElement('label');
-    label.textContent = `Indicado ${i}:`;
-
-    const input = document.createElement('input');
-    input.type = 'text';
-    input.name = 'palpite[]';
-    input.placeholder = `Digite o nome do indicado ${i}`;
-    input.required = true;
-
-    inputContainer.appendChild(label);
-    inputContainer.appendChild(input);
-    palpitesContainer.appendChild(inputContainer);
-  }
-}
-
-function carregarNomeados(categoriaId, premiacaoId) {
-  const nomeadosContainer = document.getElementById('nomeados-container');
-  nomeadosContainer.innerHTML = ''; 
-
-  fetch(`http://localhost:3000/user/nomeados/${categoriaId}/${premiacaoId}`)
-    .then(response => response.json())
-    .then(nomeados => {
-      nomeados.forEach(nomeado => {
-        const checkbox = document.createElement('input');
-        checkbox.type = 'checkbox';
-        checkbox.name = 'nomeados';
-        checkbox.value = nomeado.id;
-        checkbox.id = `nomeado-${nomeado.id}`;
-
-        const label = document.createElement('label');
-        label.htmlFor = `nomeado-${nomeado.id}`;
-        label.textContent = nomeado.nome;
-
-        nomeadosContainer.appendChild(checkbox);
-        nomeadosContainer.appendChild(label);
-        nomeadosContainer.appendChild(document.createElement('br'));
-      });
-    })
-    .catch(err => console.error('Erro ao carregar nomeados:', err));
-}
-
 function carregarNomeadosConcluido(categoriaId, premiacaoId) {
   const nomeadosContainer = document.getElementById('nomeados-container');
-  nomeadosContainer.innerHTML = ''; 
+  nomeadosContainer.innerHTML = '';
 
   fetch(`http://localhost:3000/user/nomeados/${categoriaId}/${premiacaoId}`)
     .then(response => response.json())
@@ -439,13 +451,9 @@ function carregarNomeadosConcluido(categoriaId, premiacaoId) {
     .catch(err => console.error('Erro ao carregar nomeados:', err));
 }
 
-// FUNÇÕES PARA SALVAR OS DADOS
-
-function salvarPalpites(event) {
+async function salvarPalpites(event) {
   event.preventDefault();
 
-  const selectCategoria = document.querySelector('.form-select');
-  const categoriaId = selectCategoria.value;
   const premiacaoId = document.querySelector('.h3-form').dataset.premiacaoId;
   const usuarioId = localStorage.getItem('usuario_id');
 
@@ -454,47 +462,96 @@ function salvarPalpites(event) {
     return;
   }
 
-  const palpites = Array.from(document.querySelectorAll('input[name="palpite[]"]')).map(input => input.value.trim());
+  const categoriasContainers = document.querySelectorAll('.categoria-container');
 
-  if (!categoriaId || !premiacaoId || palpites.length === 0 || palpites.some(palpite => !palpite)) {
-    alert('Todos os campos são obrigatórios!');
+  if (categoriasContainers.length === 0) {
+    alert('Nenhuma categoria encontrada.');
     return;
   }
 
-  const data = {
-    usuario_id: usuarioId,
-    categoria_id: categoriaId,
-    premiacao_id: premiacaoId,
-    palpites: palpites
-  };
+  const requests = [];
 
-  fetch('http://localhost:3000/user/palpite', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  })
-    .then(response => response.json())
-    .then(data => {
-      alert(data.message);
+  categoriasContainers.forEach(categoriaContainer => {
+    const categoriaId = categoriaContainer.querySelector('.indicado-input').dataset.categoriaId;
+    const palpites = Array.from(categoriaContainer.querySelectorAll('.indicado-input'))
+      .map(input => input.value.trim())
+      .filter(palpite => palpite !== '');
+
+    if (palpites.length > 0) {
+      const data = {
+        usuario_id: usuarioId,
+        categoria_id: categoriaId,
+        premiacao_id: premiacaoId,
+        palpites
+      };
+
+      requests.push(
+        fetch('http://localhost:3000/user/palpite', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data),
+        })
+          .then(response => response.json())
+          .then(responseData => {
+            console.log(responseData);
+            return responseData;
+          })
+          .catch(error => {
+            console.error('Erro ao salvar palpites:', error);
+            return { error: 'Erro ao salvar palpites.' };
+          })
+      );
+    }
+  });
+
+  if (requests.length === 0) {
+    alert('Preencha pelo menos um palpite antes de salvar.');
+    return;
+  }
+
+  try {
+    const results = await Promise.all(requests);
+    const errors = results.filter(result => result.error);
+    if (errors.length > 0) {
+      alert('Alguns palpites não foram salvos. Possivelmente você já enviou palpites para esta premiação.');
+    } else {
+      alert('Todos os palpites foram salvos com sucesso!');
       fecharPopup();
-    })
-    .catch(error => {
-      console.error(error);
-      alert('Erro ao salvar os palpites.');
-    });
+      carregarPremiacoes();
+    }
+  } catch (error) {
+    console.error('Erro ao enviar palpites:', error);
+    alert('Erro ao salvar os palpites.');
+  }
 }
 
 function salvarVoto(event) {
   event.preventDefault();
 
-  const categoriaSelect = document.getElementById('categoria-select');
-  const categoriaId = categoriaSelect.value;
   const premiacaoId = document.querySelector('.h3-form').dataset.premiacaoId;
   const usuarioId = localStorage.getItem('usuario_id');
-  const nomeadosSelecionados = Array.from(document.querySelectorAll('input[name="nomeados"]:checked'));
 
-  nomeadosSelecionados.forEach(nomeadoCheckbox => {
-    const nomeadoId = nomeadoCheckbox.value;
+  if (!usuarioId) {
+    alert('Usuário não está logado. Faça login para salvar votos.');
+    return;
+  }
+
+  const categoriasContainer = document.getElementById('categorias-vencedores-container');
+  const categorias = categoriasContainer.querySelectorAll('.categoria-vencedores');
+
+  let votosSalvos = 0;
+  let totalCategorias = categorias.length;
+
+  categorias.forEach(categoria => {
+    const categoriaId = categoria.querySelector('h4').dataset.categoriaId;
+    const vencedorSelecionado = categoria.querySelector('input[type="radio"]:checked');
+
+    if (!vencedorSelecionado) {
+      alert(`Selecione um vencedor para a categoria: ${categoria.querySelector('h4').textContent}`);
+      return;
+    }
+
+    const nomeadoId = vencedorSelecionado.value;
 
     fetch('http://localhost:3000/user/votos', {
       method: 'POST',
@@ -506,12 +563,54 @@ function salvarVoto(event) {
         premiacao_id: premiacaoId
       })
     })
-    .then(response => response.json())
-    .then(data => {
-      console.log('Voto salvo com sucesso:', data);
-    })
-    .catch(err => console.error('Erro ao salvar voto:', err));
+      .then(response => response.json())
+      .then(data => {
+        console.log('Voto salvo com sucesso:', data);
+        votosSalvos++;
+
+        if (votosSalvos === totalCategorias) {
+          fecharPopup();
+          carregarPremiacoes();
+        }
+      })
+      .catch(err => {
+        console.error('Erro ao salvar voto:', err);
+        alert('Erro ao salvar voto. Tente novamente.');
+      });
+  });
+}
+
+function restaurarEstadoInputs() {
+  const estadoSalvo = localStorage.getItem('estadoIndicados');
+  if (!estadoSalvo) return;
+
+  const estado = JSON.parse(estadoSalvo);
+  document.querySelectorAll('.indicado-input').forEach(input => {
+    const categoriaId = input.dataset.categoriaId;
+    if (estado[categoriaId]) {
+      input.value = estado[categoriaId].shift() || "";
+    }
+  });
+}
+
+function salvarEstadoInputs() {
+  const inputs = document.querySelectorAll('.indicado-input');
+  const estado = {};
+
+  inputs.forEach(input => {
+    const categoriaId = input.dataset.categoriaId;
+    if (!estado[categoriaId]) {
+      estado[categoriaId] = [];
+    }
+    estado[categoriaId].push(input.value);
   });
 
-  fecharPopup();
+  localStorage.setItem('estadoIndicados', JSON.stringify(estado));
 }
+
+// Salva o estado dos inputs conforme o usuário digita
+document.addEventListener('input', (event) => {
+  if (event.target.classList.contains('indicado-input')) {
+    salvarEstadoInputs();
+  }
+});

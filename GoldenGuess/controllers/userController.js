@@ -1,7 +1,5 @@
 const db = require('../database/db');
 
-
-
 const getPremiacoes = (req, res) => {
   const sql = `SELECT * FROM premiacoes`;
   db.all(sql, [], (err, rows) => {
@@ -44,6 +42,123 @@ const getNomeados = (req, res) => {
   });
 };
 
+const getUsuarioInfo = (req, res) => {
+  const { usuarioId } = req.params;
+
+  const sql = `SELECT nome, email, data_nascimento FROM usuarios WHERE id = ?`;
+  db.get(sql, [usuarioId], (err, row) => {
+    if (err) {
+      return res.status(500).json({ error: 'Erro ao buscar informações do usuário.' });
+    }
+    res.status(200).json(row);
+  });
+};
+
+const getUsuarioAtividade = (req, res) => {
+  const { usuarioId } = req.params;
+
+  const sqlPalpites = `
+    SELECT DISTINCT p.id, p.nome, p.descricao, p.fase
+    FROM premiacoes p
+    JOIN palpites pl ON p.id = pl.premiacao_id
+    WHERE pl.usuario_id = ?
+  `;
+
+  const sqlVotos = `
+    SELECT DISTINCT p.id, p.nome, p.descricao, p.fase
+    FROM premiacoes p
+    JOIN votos v ON p.id = v.premiacao_id
+    WHERE v.usuario_id = ?
+  `;
+
+  Promise.all([
+    new Promise((resolve, reject) => {
+      db.all(sqlPalpites, [usuarioId], (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
+      });
+    }),
+    new Promise((resolve, reject) => {
+      db.all(sqlVotos, [usuarioId], (err, rows) => {
+        if (err) return reject(err);
+        resolve(rows);
+      });
+    })
+  ])
+  .then(([palpites, votos]) => {
+    res.status(200).json({ palpites, votos });
+  })
+  .catch(error => {
+    console.error('Erro ao buscar atividade do usuário:', error);
+    res.status(500).json({ error: 'Erro ao buscar atividade do usuário.' });
+  });
+};
+
+const getUsuarioResultados = (req, res) => {
+  const { usuarioId } = req.params;
+
+  const sql = `
+    SELECT 
+      p.id AS premiacao_id,
+      p.nome AS premiacao_nome,
+      c.id AS categoria_id,
+      c.nome AS categoria_nome,
+      COUNT(DISTINCT cn.nomeado_id) AS totalIndicados,
+      SUM(CASE WHEN pl.nome_formatado = n.nome_formatado THEN 1 ELSE 0 END) AS acertosPrimeiraFase,
+      GROUP_CONCAT(DISTINCT CASE WHEN pl.nome_formatado = n.nome_formatado THEN n.nome ELSE NULL END) AS palpitesCorretos,
+      COUNT(v.id) AS qtdVotos,
+      MAX(CASE WHEN cn.ganhador = 1 AND v.nomeado_id = cn.nomeado_id THEN 1 ELSE 0 END) AS acertoSegundaFase
+    FROM premiacoes p
+    JOIN categorias c ON p.id = c.premiacao_id
+    JOIN categoria_nomeado cn ON c.id = cn.categoria_id
+    JOIN nomeados n ON cn.nomeado_id = n.id
+    LEFT JOIN palpites pl ON pl.categoria_id = c.id AND pl.usuario_id = ?
+    LEFT JOIN votos v ON v.categoria_id = c.id AND v.usuario_id = ?
+    GROUP BY p.id, c.id
+  `;
+
+  db.all(sql, [usuarioId, usuarioId], (err, rows) => {
+    if (err) {
+      console.error('Erro ao buscar resultados do usuário:', err);
+      return res.status(500).json({ error: 'Erro ao buscar resultados do usuário.' });
+    }
+
+    // Formata os resultados para o frontend
+    const resultados = rows.map(row => {
+      // Verifica se o usuário registrou voto nesta categoria
+      let mensagemSegundaFase;
+      if (row.qtdVotos === 0) {
+        mensagemSegundaFase = 'Fase em andamento';
+      } else {
+        mensagemSegundaFase = row.acertoSegundaFase === 1
+          ? 'Você acertou o vencedor'
+          : 'Você errou o vencedor';
+      }
+
+      return {
+        premiacao: {
+          id: row.premiacao_id,
+          nome: row.premiacao_nome
+        },
+        categoria: {
+          id: row.categoria_id,
+          nome: row.categoria_nome
+        },
+        totalIndicados: row.totalIndicados,
+        acertosPrimeiraFase: row.acertosPrimeiraFase,
+        palpitesCorretos: row.palpitesCorretos ? row.palpitesCorretos.split(',') : [],
+        acertoSegundaFase: mensagemSegundaFase
+      };
+    });
+
+    res.status(200).json(resultados);
+  });
+};
+
+const formatarNome = (nome) => {
+  return nome.toLowerCase().replace(/\s+/g, '');
+};
+
 const salvarVoto =  (req, res) => {
   const { usuario_id, nomeado_id, categoria_id, premiacao_id } = req.body;
   const sql = 'INSERT INTO votos (usuario_id, nomeado_id, categoria_id, premiacao_id) VALUES (?, ?, ?, ?)';
@@ -54,10 +169,6 @@ const salvarVoto =  (req, res) => {
     }
     res.json({ id: this.lastID, usuario_id, nomeado_id, categoria_id, premiacao_id });
   });
-};
-
-const formatarNome = (nome) => {
-  return nome.toLowerCase().replace(/\s+/g, ''); // Converte para minúsculas e remove espaços
 };
 
 const enviarPalpite = (req, res) => {
@@ -96,99 +207,6 @@ const listarUsuarios = (req, res) => {
       return res.status(500).json({ error: 'Erro ao buscar usuários.' });
     }
     res.status(200).json(rows); 
-  });
-};
-
-const getUsuarioInfo = (req, res) => {
-  const { usuarioId } = req.params;
-
-  const sql = `SELECT nome, email, data_nascimento FROM usuarios WHERE id = ?`;
-  db.get(sql, [usuarioId], (err, row) => {
-    if (err) {
-      return res.status(500).json({ error: 'Erro ao buscar informações do usuário.' });
-    }
-    res.status(200).json(row);
-  });
-};
-
-const getUsuarioAtividade = (req, res) => {
-  const { usuarioId } = req.params;
-
-  const sqlPalpites = `
-    SELECT p.id, p.nome, p.descricao, p.fase
-    FROM premiacoes p
-    JOIN palpites pl ON p.id = pl.premiacao_id
-    WHERE pl.usuario_id = ?
-  `;
-
-  const sqlVotos = `
-    SELECT p.id, p.nome, p.descricao, p.fase
-    FROM premiacoes p
-    JOIN votos v ON p.id = v.premiacao_id
-    WHERE v.usuario_id = ?
-  `;
-
-  // Executa as duas consultas em paralelo
-  Promise.all([
-    new Promise((resolve, reject) => {
-      db.all(sqlPalpites, [usuarioId], (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows);
-      });
-    }),
-    new Promise((resolve, reject) => {
-      db.all(sqlVotos, [usuarioId], (err, rows) => {
-        if (err) return reject(err);
-        resolve(rows);
-      });
-    })
-  ])
-  .then(([palpites, votos]) => {
-    res.status(200).json({ palpites, votos });
-  })
-  .catch(error => {
-    console.error('Erro ao buscar atividade do usuário:', error);
-    res.status(500).json({ error: 'Erro ao buscar atividade do usuário.' });
-  });
-};
-
-const getUsuarioResultados = (req, res) => {
-  const { usuarioId } = req.params;
-
-  const sql = `
-    SELECT 
-      p.id AS premiacao_id,
-      p.nome AS premiacao_nome,
-      COUNT(DISTINCT cn.nomeado_id) AS totalIndicados,
-      SUM(CASE WHEN pl.nome_formatado = n.nome_formatado THEN 1 ELSE 0 END) AS acertosPrimeiraFase,
-      MAX(CASE WHEN cn.ganhador = 1 AND v.nomeado_id = cn.nomeado_id THEN 1 ELSE 0 END) AS acertoSegundaFase
-    FROM premiacoes p
-    JOIN categorias c ON p.id = c.premiacao_id
-    JOIN categoria_nomeado cn ON c.id = cn.categoria_id
-    JOIN nomeados n ON cn.nomeado_id = n.id
-    LEFT JOIN palpites pl ON pl.categoria_id = c.id AND pl.usuario_id = ?
-    LEFT JOIN votos v ON v.categoria_id = c.id AND v.usuario_id = ?
-    GROUP BY p.id
-  `;
-
-  db.all(sql, [usuarioId, usuarioId], (err, rows) => {
-    if (err) {
-      console.error('Erro ao buscar resultados do usuário:', err);
-      return res.status(500).json({ error: 'Erro ao buscar resultados do usuário.' });
-    }
-
-    // Formata os resultados para o frontend
-    const resultados = rows.map(row => ({
-      premiacao: {
-        id: row.premiacao_id,
-        nome: row.premiacao_nome
-      },
-      totalIndicados: row.totalIndicados,
-      acertosPrimeiraFase: row.acertosPrimeiraFase,
-      acertoSegundaFase: row.acertoSegundaFase === 1
-    }));
-
-    res.status(200).json(resultados);
   });
 };
 

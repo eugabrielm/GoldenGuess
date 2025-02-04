@@ -57,43 +57,43 @@ function carregarInformacoesUsuario(usuarioId) {
 }
   
 function carregarAtividadeUsuario(usuarioId) {
-    const section = document.getElementById('minha-atividade');
-    section.innerHTML = ''; 
-  
-    fetch(`http://localhost:3000/user/atividade/${usuarioId}`)
-      .then(response => response.json())
-      .then(atividade => {
-        console.log("Resposta da API:", atividade);
-  
-        const palpitesContainer = document.createElement('div');
-        palpitesContainer.innerHTML = '<h3>Primeira Fase - Palpites</h3>';
-        const palpitesPosters = document.createElement('div');
-        palpitesPosters.classList.add('posters-container');
-  
-        atividade.palpites.forEach(premiacao => {
-          const poster = criarPoster(premiacao);
-          palpitesPosters.appendChild(poster);
-        });
-  
-        palpitesContainer.appendChild(palpitesPosters);
-        section.appendChild(palpitesContainer);
-  
+  const section = document.getElementById('minha-atividade');
+  section.innerHTML = ''; 
 
-        const votosContainer = document.createElement('div');
-        votosContainer.innerHTML = '<h3>Segunda Fase - Votos</h3>';
-        const votosPosters = document.createElement('div');
-        votosPosters.classList.add('posters-container');
-  
-        atividade.votos.forEach(premiacao => {
-          const poster = criarPoster(premiacao);
-          votosPosters.appendChild(poster);
-        });
-  
-        votosContainer.appendChild(votosPosters);
-        section.appendChild(votosContainer);
-      })
-      .catch(error => console.error('Erro ao carregar atividade do usuário:', error));
-  }
+  fetch(`http://localhost:3000/user/atividade/${usuarioId}`)
+    .then(response => response.json())
+    .then(atividade => {
+      // Para palpites:
+      const palpitesContainer = document.createElement('div');
+      palpitesContainer.innerHTML = '<h3>Primeira Fase - Palpites</h3>';
+      const palpitesPosters = document.createElement('div');
+      palpitesPosters.classList.add('posters-container');
+
+      // Filtra para que cada premiacão apareça apenas uma vez
+      const palpitesUnicos = filtrarPremiacoesUnicas(atividade.palpites);
+      palpitesUnicos.forEach(premiacao => {
+        const poster = criarPoster(premiacao);
+        palpitesPosters.appendChild(poster);
+      });
+      palpitesContainer.appendChild(palpitesPosters);
+      section.appendChild(palpitesContainer);
+
+      // Para votos:
+      const votosContainer = document.createElement('div');
+      votosContainer.innerHTML = '<h3>Segunda Fase - Votos</h3>';
+      const votosPosters = document.createElement('div');
+      votosPosters.classList.add('posters-container');
+
+      const votosUnicos = filtrarPremiacoesUnicas(atividade.votos);
+      votosUnicos.forEach(premiacao => {
+        const poster = criarPoster(premiacao);
+        votosPosters.appendChild(poster);
+      });
+      votosContainer.appendChild(votosPosters);
+      section.appendChild(votosContainer);
+    })
+    .catch(error => console.error('Erro ao carregar atividade do usuário:', error));
+}
 
 function carregarResultadosUsuario(usuarioId) {
   const section = document.getElementById('meus-resultados');
@@ -107,19 +107,35 @@ function carregarResultadosUsuario(usuarioId) {
       return response.json();
     })
     .then(resultados => {
-      console.log("Resposta da API:", resultados);
-
       const resultadosContainer = document.createElement('div');
 
-      resultados.forEach(resultado => {
-        const card = document.createElement('div');
-        card.classList.add('resultado-card');
-        card.innerHTML = `
-          <h3>${resultado.premiacao.nome}</h3>
-          <p>Primeira Fase: Você acertou ${resultado.acertosPrimeiraFase} de ${resultado.totalIndicados} indicados.</p>
-          <p>Segunda Fase: ${resultado.acertoSegundaFase ? 'Acertou o vencedor!' : 'Não acertou o vencedor.'}</p>
-        `;
-        resultadosContainer.appendChild(card);
+      // Agrupar resultados por premiação
+      const resultadosPorPremiacao = resultados.reduce((acc, resultado) => {
+        if (!acc[resultado.premiacao.nome]) {
+          acc[resultado.premiacao.nome] = [];
+        }
+        acc[resultado.premiacao.nome].push(resultado);
+        return acc;
+      }, {});
+
+      // Exibir resultados por premiação e categoria
+      Object.entries(resultadosPorPremiacao).forEach(([premiacaoNome, categorias]) => {
+        const premiacaoContainer = document.createElement('div');
+        premiacaoContainer.innerHTML = `<h2>${premiacaoNome}</h2>`;
+        
+        categorias.forEach(categoria => {
+          const card = document.createElement('div');
+          card.classList.add('resultado-card');
+          card.innerHTML = `
+            <h3>${categoria.categoria.nome}</h3>
+            <p>Primeira Fase: Você acertou ${categoria.acertosPrimeiraFase} de ${categoria.totalIndicados} indicados.</p>
+            <p>Palpites corretos: ${categoria.palpitesCorretos.join(', ')}</p>
+            <p>Segunda Fase: ${categoria.acertoSegundaFase}</p>
+          `;
+          premiacaoContainer.appendChild(card);
+        });
+
+        resultadosContainer.appendChild(premiacaoContainer);
       });
 
       section.appendChild(resultadosContainer);
@@ -128,6 +144,19 @@ function carregarResultadosUsuario(usuarioId) {
       console.error('Erro ao carregar resultados do usuário:', error);
       section.innerHTML = '<p>Erro ao carregar resultados. Tente novamente mais tarde.</p>';
     });
+}
+
+function filtrarPremiacoesUnicas(premiacoes) {
+    // Cria um objeto auxiliar onde a chave é o id da premiacão
+    const premiacoesUnicas = {};
+    premiacoes.forEach(premiacao => {
+      // Se ainda não adicionou, guarda o objeto
+      if (!premiacoesUnicas[premiacao.id]) {
+        premiacoesUnicas[premiacao.id] = premiacao;
+      }
+    });
+    // Retorna os valores (únicos) do objeto
+    return Object.values(premiacoesUnicas);
 }
   
 function criarPoster(premiacao) {

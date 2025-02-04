@@ -166,8 +166,8 @@ const createTables = () => {
 };
 
 // Descomente as funções de acordo com a necessidade
-dropTables();
-createTables();
+//dropTables();
+//createTables();
 
 const listarPremiacoes = () => {
   db.all(`SELECT nome, descricao, fase FROM premiacoes`, [], (err, rows) => {
